@@ -3,12 +3,36 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- 세로 방향으로 배치 -->
+
+    <!-- 프로젝트 이름 -->
     <TextView
-        android:id="@+id/textViewItem"
+        android:id="@+id/tvProjectName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="아이템 이름"
-        android:textSize="18sp" />
+        android:text="프로젝트 이름"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- 프로젝트 설명 -->
+    <TextView
+        android:id="@+id/tvProjectDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="프로젝트 설명"
+        android:textSize="16sp"
+        android:layout_marginTop="4dp" />
+
+    <!-- 조원 -->
+    <TextView
+        android:id="@+id/tvProjectMembers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="조원"
+        android:textSize="16sp"
+        android:layout_marginTop="4dp" />
+
 </LinearLayout>

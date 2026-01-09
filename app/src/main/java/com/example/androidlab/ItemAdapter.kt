@@ -6,22 +6,27 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class ItemAdapter(private val items: List<String>) :
-    RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
+class ProjectAdapter(private val projects: List<Project>) :
+    RecyclerView.Adapter<ProjectAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textView: TextView = itemView.findViewById(R.id.textViewItem)
+        val tvProjectName: TextView = itemView.findViewById(R.id.tvProjectName)
+        val tvProjectDescription: TextView = itemView.findViewById(R.id.tvProjectDescription)
+        val tvProjectMembers: TextView = itemView.findViewById(R.id.tvProjectMembers)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_list, parent, false)
+            .inflate(R.layout.item_list, parent, false) // 바꾼 XML 이름
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textView.text = items[position]
+        val project = projects[position]
+        holder.tvProjectName.text = project.name
+        holder.tvProjectDescription.text = project.description
+        holder.tvProjectMembers.text = project.members
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = projects.size
 }
