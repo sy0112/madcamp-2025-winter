@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-data class Item(val project_name: String, val project_description: String, val group_member: String)
+data class Item(val projectName: String, val projectDescription: String, val groupMember: String)
 class MainActivity : AppCompatActivity() {
     // main activity는 앱이 실행될 때 가장 먼저 실행되는 화면임.
 
