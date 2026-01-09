@@ -10,9 +10,9 @@ class ItemAdapter(private val items: List<Item>) :
     RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvProject_name: TextView = itemView.findViewById(R.id.tv_project_name)
-        val tvProject_description: TextView = itemView.findViewById(R.id.tv_project_description)
-        val tvGroup_member: TextView = itemView.findViewById(R.id.tv_group_member)
+        val tvProjectName: TextView = itemView.findViewById(R.id.tv_project_name)
+        val tvProjectDescription: TextView = itemView.findViewById(R.id.tv_project_description)
+        val tvGroupMember: TextView = itemView.findViewById(R.id.tv_group_member)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,9 +23,9 @@ class ItemAdapter(private val items: List<Item>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.tvProject_name.text = item.project_name
-        holder.tvProject_description.text = item.project_description
-        holder.tvGroup_member.text = item.group_member
+        holder.tvProjectName.text = item.projectName
+        holder.tvProjectDescription.text = item.projectDescription
+        holder.tvGroupMember.text = item.groupMember
     }
 
     override fun getItemCount(): Int = items.size
