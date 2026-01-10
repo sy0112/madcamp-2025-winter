@@ -38,6 +38,12 @@ class ListFragment : Fragment(R.layout.fragment_list) {
                 "웹 디자인 프로젝트",
                 "서민훈, 정다훈",
                 listOf(R.drawable.project2_1, R.drawable.project2_2)
+            ),
+            Project(
+                "iOS 앱 개발",
+                "iOS 앱 프로젝트 설명",
+                "김철수, 이영희",
+                listOf(R.drawable.project3_1, R.drawable.project3_2)
             )
         )
     }

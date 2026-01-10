@@ -1,5 +1,26 @@
-<androidx.recyclerview.widget.RecyclerView
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recyclerView"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent"
+    android:padding="15dp">
+
+    <!-- 상단 제목 -->
+    <TextView
+        android:id="@+id/tvHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="프로젝트 목록"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:paddingBottom="10dp"
+        android:textAlignment="center"/>
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+</LinearLayout>
