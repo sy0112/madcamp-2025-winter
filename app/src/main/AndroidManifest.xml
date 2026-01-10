@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidLab">
 
-        <!-- SplashActivity는 전용 테마 적용 -->
+        <!-- 앱 시작 시 SplashActivity -->
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -19,6 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- 로그인 화면 -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AndroidLab"/>
 
         <activity
             android:name=".MainActivity"

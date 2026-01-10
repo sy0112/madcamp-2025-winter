@@ -3,8 +3,22 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="12dp">
 
+    <!-- 목록 제목 -->
+    <TextView
+        android:id="@+id/tvProjectListTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="프로젝트 목록"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#212121"
+        android:gravity="center"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- 프로젝트 카드들을 담는 RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

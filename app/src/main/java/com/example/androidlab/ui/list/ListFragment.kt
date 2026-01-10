@@ -31,19 +31,19 @@ class ListFragment : Fragment(R.layout.fragment_list) {
                 "Android 앱 개발",
                 "Android 앱 프로젝트 설명",
                 "강승수, 박새연",
-                listOf(R.drawable.project1_1, R.drawable.project1_2)
+                listOf(R.drawable.project1_1, R.drawable.project1_2, R.drawable.project1_3)
             ),
             Project(
                 "웹사이트 디자인",
                 "웹 디자인 프로젝트",
                 "서민훈, 정다훈",
-                listOf(R.drawable.project2_1, R.drawable.project2_2)
+                listOf(R.drawable.project2_1, R.drawable.project2_2, R.drawable.project2_3)
             ),
             Project(
                 "iOS 앱 개발",
                 "iOS 앱 프로젝트 설명",
                 "김철수, 이영희",
-                listOf(R.drawable.project3_1, R.drawable.project3_2)
+                listOf(R.drawable.project3_1, R.drawable.project3_2, R.drawable.project3_3)
             )
         )
     }

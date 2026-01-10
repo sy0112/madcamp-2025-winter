@@ -1,51 +1,88 @@
 package com.example.androidlab
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
-import com.example.androidlab.ui.detail.DetailFragment
-import com.example.androidlab.ui.grid.GridFragment
-import com.example.androidlab.ui.list.ListFragment
-import com.example.androidlab.ui.register.RegisterFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.androidlab.databinding.ActivityLoginBinding
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
-class MainActivity : AppCompatActivity() {
+
+class LoginActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityLoginBinding
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        initClick()
+        initGoogleSignInClient()
+    }
 
-        // 기본 화면: GridFragment
-        supportFragmentManager.commit {
-            replace(R.id.fragmentContainer, GridFragment())
-        }
-
-        // 하단 네비게이션 클릭
-        bottomNav.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.menu_grid -> {
-                    openFragment(GridFragment())
-                    true
-                }
-                R.id.menu_list -> {
-                    openFragment(ListFragment())
-                    true
-                }
-                R.id.menu_register -> {
-                    openFragment(RegisterFragment()) // 등록 화면
-                    true
-                }
-                else -> false
-            }
+    private fun initClick() {
+        binding.tvGoogleLogin.setOnClickListener {
+            startLoginGoogle()
         }
     }
 
-    private fun openFragment(fragment: androidx.fragment.app.Fragment) {
-        supportFragmentManager.commit {
-            replace(R.id.fragmentContainer, fragment)
-            addToBackStack(null) // 뒤로가기 시 이전 화면으로
+    private fun initGoogleSignInClient() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id)) // google-services.json에 있는 클라이언트 ID
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+    }
+
+    private fun startLoginGoogle() {
+        googleLoginResult.launch(mGoogleSignInClient.signInIntent)
+    }
+
+    private val googleLoginResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val data = result.data
+        try {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            val account = task.getResult(ApiException::class.java)
+            firebaseAuthWithGoogle(account.idToken)
+        } catch (e: ApiException) {
+            onError(e)
         }
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String?) {
+        if (idToken == null) return
+        val auth = Firebase.auth
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    onLoginCompleted(user?.uid, user?.email)
+                } else {
+                    onError(task.exception)
+                }
+            }
+    }
+
+    private fun onLoginCompleted(userId: String?, email: String?) {
+        Toast.makeText(this, "로그인 성공: $email", Toast.LENGTH_SHORT).show()
+        Log.d("Login", "userId=$userId, email=$email")
+    }
+
+    private fun onError(error: Exception?) {
+        Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
+        Log.e("Login", "구글 로그인 실패", error)
     }
 }

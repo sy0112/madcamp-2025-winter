@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "688993047772",
+    "project_id": "madcamp-2025-winter-week1",
+    "storage_bucket": "madcamp-2025-winter-week1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:688993047772:android:44ab5422b2e820ecd39019",
+        "android_client_info": {
+          "package_name": "com.example.androidlab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "688993047772-p6ikgvh6pndang07dba5e598lvtdfl37.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.androidlab",
+            "certificate_hash": "3a7152eb2dca743d7cf373339d3550a0c4c82613"
+          }
+        },
+        {
+          "client_id": "688993047772-j35n155cfd0bqlaie7m2igv7pde1s7d3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAphtM-Gfz3SI-5UAZKhRsfrscl1RlsLDc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "688993047772-gvu6t0ridhkmi9r6g3u0fjeefpukv4ur.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
