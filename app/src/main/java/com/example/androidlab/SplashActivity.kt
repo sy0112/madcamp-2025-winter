@@ -14,9 +14,10 @@ class SplashActivity : AppCompatActivity() {
         // 레이아웃 연결
         setContentView(R.layout.activity_splash)  // ← 여기서 정확히 레이아웃 이름 확인
 
-        // 일정 시간 후 MainActivity로 이동
+        // 일정 시간 후 MainActivity로 이동 (로그인 건너뛰기)
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, LoginActivity::class.java))
+            // startActivity(Intent(this, LoginActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }, 2000)  // 2초
     }

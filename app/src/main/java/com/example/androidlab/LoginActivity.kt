@@ -6,30 +6,31 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.androidlab.databinding.ActivityLoginBinding
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
+// import com.google.android.gms.auth.api.signin.GoogleSignIn
+// import com.google.android.gms.auth.api.signin.GoogleSignInClient
+// import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+// import com.google.android.gms.common.api.ApiException
+// import com.google.firebase.auth.FirebaseAuth
+// import com.google.firebase.auth.GoogleAuthProvider
+// import com.google.firebase.Firebase
+// import com.google.firebase.auth.auth
 
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
+    // private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initClick()
-        initGoogleSignInClient()
+        // initClick()
+        // initGoogleSignInClient()
     }
 
+    /*
     private fun initClick() {
         binding.tvGoogleLogin.setOnClickListener {
             startLoginGoogle()
@@ -85,4 +86,5 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
         Log.e("Login", "구글 로그인 실패", error)
     }
+    */
 }

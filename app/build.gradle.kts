@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.gms.google-services")
+    // id("com.google.gms.google-services")
 
 }
 
@@ -65,6 +65,7 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.1.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("com.google.android.material:material:1.11.0")
+/*
 // Firebase BOM 사용
     implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
 
@@ -73,5 +74,5 @@ dependencies {
 
 // Firebase Auth KTX (BOM에서 버전 관리)
     implementation("com.google.firebase:firebase-auth")
-
+*/
 }
