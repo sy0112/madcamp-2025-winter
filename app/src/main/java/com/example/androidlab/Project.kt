@@ -1,8 +1,10 @@
-package com.example.androidlab
+package com.example.androidlab.models
 
 data class Project(
-    val title: String,
-    val description: String,
-    val members: String,
-    val images: List<Int>
+    val id: String = "",            // Firestore 문서 ID
+    val title: String = "",
+    val description: String = "",
+    val members: String = "",
+    val ownerUid: String = "",
+    val createdAt: Long = 0
 )
