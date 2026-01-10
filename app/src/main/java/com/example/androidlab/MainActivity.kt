@@ -1,6 +1,8 @@
 package com.example.androidlab
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.example.androidlab.ui.detail.DetailFragment
@@ -8,12 +10,25 @@ import com.example.androidlab.ui.grid.GridFragment
 import com.example.androidlab.ui.list.ListFragment
 import com.example.androidlab.ui.register.RegisterFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // 1. 로그인 상태 확인
+        val currentUser = Firebase.auth.currentUser
+        if (currentUser == null) {
+            // 로그인이 안 되어 있다면 로그인 화면으로 이동
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
 

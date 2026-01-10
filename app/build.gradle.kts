@@ -2,15 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    // id("com.google.gms.google-services")
-
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.example.androidlab"  //  패키지 이름
-    compileSdk {
-        version = release(36)
-    }
+    namespace = "com.example.androidlab"
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.androidlab"
@@ -53,6 +50,19 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    
+    // Firebase 및 Auth 관련 라이브러리 모두 활성화
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation("com.google.android.material:material:1.11.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -60,19 +70,4 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.viewpager2:viewpager2:1.1.0")
-    implementation("androidx.fragment:fragment-ktx:1.6.2")
-    implementation("com.google.android.material:material:1.11.0")
-/*
-// Firebase BOM 사용
-    implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
-
-// Play Services Auth (BOM과 호환되는 안정 버전)
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-
-// Firebase Auth KTX (BOM에서 버전 관리)
-    implementation("com.google.firebase:firebase-auth")
-*/
 }
