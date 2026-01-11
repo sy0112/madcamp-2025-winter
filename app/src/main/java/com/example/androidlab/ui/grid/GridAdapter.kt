@@ -1,5 +1,4 @@
 package com.example.androidlab.ui.grid
-import com.example.androidlab.Project
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidlab.R
+import com.example.androidlab.models.Project // 수정됨
 import com.example.androidlab.ui.detail.DetailFragment
 
 class GridAdapter(
@@ -28,7 +28,10 @@ class GridAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val project = items[position]
-        holder.img.setImageResource(project.images.first())
+        // images 필드가 비어있지 않은지 확인하는 안전한 코드 추가
+        if (project.images.isNotEmpty()) {
+            holder.img.setImageResource(project.images.first())
+        }
         holder.title.text = project.title
 
         holder.itemView.setOnClickListener {

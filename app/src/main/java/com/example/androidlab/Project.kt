@@ -1,10 +1,2 @@
-package com.example.androidlab.models
-
-data class Project(
-    val id: String = "",            // Firestore 문서 ID
-    val title: String = "",
-    val description: String = "",
-    val members: String = "",
-    val ownerUid: String = "",
-    val createdAt: Long = 0
-)
+// 이 파일은 중복 정의로 인해 비워졌습니다. 
+// com.example.androidlab.models.Project 를 사용하세요.

@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.androidlab.R
-import com.example.androidlab.Project
+import com.example.androidlab.models.Project // 패키지 경로를 올바르게 수정
 
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
