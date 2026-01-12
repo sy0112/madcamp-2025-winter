@@ -32,30 +32,21 @@ class LoginActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         initGoogleSignInClient()
-
-        forceSignOut() // 앱이 켜질 때마다 기존 세션 강제 로그아웃
-
         initClick()
-    }
-
-    private fun forceSignOut() {
-        // 1. 파이어베이스 로그아웃
-        auth.signOut()
-
-        // 2. 구글 클라이언트 로그아웃 (이걸 해야 계정 선택창이 다시 뜹니다)
-        mGoogleSignInClient.signOut().addOnCompleteListener {
-            Log.d("Login", "기존 구글 세션 삭제 및 로그아웃 완료")
-        }
     }
 
     private fun initClick() {
         binding.btnGoogleLogin.setOnClickListener {
-            startLoginGoogle()
+            // 로그인 전 기존 세션 로그아웃 (계정 선택창을 강제로 띄우기 위함)
+            mGoogleSignInClient.signOut().addOnCompleteListener {
+                startLoginGoogle()
+            }
         }
     }
 
     private fun initGoogleSignInClient() {
-        // google-services.json에서 확인한 실제 Web Client ID를 직접 입력하여 리소스 인식 오류를 해결합니다.
+        // google-services.json의 client_type 3 (Web Client ID)를 사용합니다.
+        // 현재 JSON 파일의 값: 1025195518832-nqhdmr1fctffrti7edst6tadlb5birno.apps.googleusercontent.com
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("1025195518832-nqhdmr1fctffrti7edst6tadlb5birno.apps.googleusercontent.com")
             .requestEmail()
@@ -78,8 +69,12 @@ class LoginActivity : AppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)!!
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
+                // 에러 코드 로깅 (10번 에러는 대게 SHA-1 지문이나 패키지명 불일치입니다)
+                Log.e("Login", "ApiException code: ${e.statusCode}")
                 onError(e)
             }
+        } else {
+            Log.e("Login", "Result not OK: ${result.resultCode}")
         }
     }
 
@@ -91,6 +86,7 @@ class LoginActivity : AppCompatActivity() {
                     val user = auth.currentUser
                     saveUserToFirestore(user)
                 } else {
+                    Log.e("Login", "Firebase Auth 실패", task.exception)
                     onError(task.exception)
                 }
             }
@@ -114,7 +110,7 @@ class LoginActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Log.e("Firestore", "유저 정보 저장 실패", e)
-                onLoginCompleted(user.uid, user.email)
+                onLoginCompleted(user.uid, user.email) 
             }
     }
 
@@ -125,7 +121,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun onError(error: Exception?) {
-        Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
-        Log.e("Login", "구글 로그인 실패", error)
+        Toast.makeText(this, "로그인 실패: ${error?.message}", Toast.LENGTH_SHORT).show()
+        Log.e("Login", "구글 로그인 실패 상세", error)
     }
 }

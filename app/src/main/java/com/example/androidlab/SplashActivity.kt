@@ -10,15 +10,14 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_splash)
 
-        // 레이아웃 연결
-        setContentView(R.layout.activity_splash)  // ← 여기서 정확히 레이아웃 이름 확인
-
-        // 일정 시간 후 MainActivity로 이동 (로그인 건너뛰기)
         Handler(Looper.getMainLooper()).postDelayed({
-            // startActivity(Intent(this, LoginActivity::class.java))
-            startActivity(Intent(this, MainActivity::class.java))
+            // 세션 체크 없이 무조건 LoginActivity로 이동
+            // LoginActivity 내의 강제 로그아웃 로직이 실행되도록 함
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
             finish()
-        }, 2000)  // 2초
+        }, 2000)
     }
 }
