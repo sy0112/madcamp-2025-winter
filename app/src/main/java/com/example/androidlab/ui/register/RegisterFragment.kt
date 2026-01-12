@@ -1,35 +1,58 @@
 package com.example.androidlab.ui.register
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.example.androidlab.R
 import com.example.androidlab.ui.grid.GridFragment
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import java.util.UUID
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 
     private val db = Firebase.firestore
-    private val auth = Firebase.auth // 현재 로그인된 사용자 정보 가져오기
+    private val auth = Firebase.auth
+    private val storage = Firebase.storage
+
+    private var selectedImageUri: Uri? = null
+    private lateinit var ivProjectImage: ImageView
+
+    // 사진 선택을 위한 Launcher
+    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            selectedImageUri = uri
+            ivProjectImage.setImageURI(uri)
+        } else {
+            Log.d("PhotoPicker", "No media selected")
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        ivProjectImage = view.findViewById(R.id.ivProjectImage)
+        val btnSelectImage = view.findViewById<Button>(R.id.btnSelectImage)
         val etTitle = view.findViewById<EditText>(R.id.etTitle)
         val etDescription = view.findViewById<EditText>(R.id.etDescription)
         val etMembers = view.findViewById<EditText>(R.id.etMembers)
         val btnRegister = view.findViewById<Button>(R.id.btnRegister)
 
+        btnSelectImage.setOnClickListener {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+
         btnRegister.setOnClickListener {
-            // 1. 현재 로그인된 유저 확인
             val currentUser = auth.currentUser
             if (currentUser == null) {
                 Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
@@ -45,31 +68,66 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 return@setOnClickListener
             }
 
-            // 2. 저장할 데이터 맵 생성 (ownerUid 추가가 핵심!)
-            val projectData = hashMapOf(
-                "ownerUid" to currentUser.uid,       // 등록한 사람의 고유 ID
-                "ownerEmail" to currentUser.email,   // (선택사항) 등록한 사람의 이메일
-                "title" to title,
-                "description" to description,
-                "members" to members,
-                "createdAt" to System.currentTimeMillis()
-            )
-
-            // 3. Firestore에 저장
-            db.collection("projects")
-                .add(projectData)
-                .addOnSuccessListener {
-                    Toast.makeText(requireContext(), "프로젝트가 등록되었습니다.", Toast.LENGTH_SHORT).show()
-
-                    // 등록 성공 후 화면 이동
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragmentContainer, GridFragment())
-                        .commit()
-                }
-                .addOnFailureListener { e ->
-                    Log.e("Firestore", "저장 에러", e)
-                    Toast.makeText(requireContext(), "등록 실패", Toast.LENGTH_SHORT).show()
-                }
+            if (selectedImageUri != null) {
+                uploadImageAndSaveData(currentUser.uid, currentUser.email, title, description, members, selectedImageUri!!)
+            } else {
+                saveProjectData(currentUser.uid, currentUser.email, title, description, members, null)
+            }
         }
+    }
+
+    private fun uploadImageAndSaveData(
+        uid: String,
+        email: String?,
+        title: String,
+        description: String,
+        members: String,
+        imageUri: Uri
+    ) {
+        val fileName = "project_images/${UUID.randomUUID()}.jpg"
+        val storageRef = storage.reference.child(fileName)
+
+        storageRef.putFile(imageUri)
+            .addOnSuccessListener {
+                storageRef.downloadUrl.addOnSuccessListener { uri ->
+                    saveProjectData(uid, email, title, description, members, uri.toString())
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("Storage", "업로드 실패", e)
+                Toast.makeText(requireContext(), "이미지 업로드 실패", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun saveProjectData(
+        uid: String,
+        email: String?,
+        title: String,
+        description: String,
+        members: String,
+        imageUrl: String?
+    ) {
+        val projectData = hashMapOf(
+            "ownerUid" to uid,
+            "ownerEmail" to email,
+            "title" to title,
+            "description" to description,
+            "members" to members,
+            "imageUrl" to imageUrl,
+            "createdAt" to System.currentTimeMillis()
+        )
+
+        db.collection("projects")
+            .add(projectData)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "프로젝트가 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, GridFragment())
+                    .commit()
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "저장 에러", e)
+                Toast.makeText(requireContext(), "등록 실패", Toast.LENGTH_SHORT).show()
+            }
     }
 }
