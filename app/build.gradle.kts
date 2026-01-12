@@ -51,12 +51,18 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     
-    // Firebase 및 Auth 관련 라이브러리 모두 활성화
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-storage") // Storage 추가
     implementation("com.google.android.gms:play-services-auth:21.2.0")
+
+    // Cloudinary
+    implementation("com.cloudinary:cloudinary-android:3.1.2")
+
+    // Glide (이미지 로딩)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.appcompat:appcompat:1.7.0")

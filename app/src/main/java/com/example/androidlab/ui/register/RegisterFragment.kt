@@ -6,33 +6,52 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
 import com.example.androidlab.R
 import com.example.androidlab.ui.grid.GridFragment
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
-import java.util.UUID
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 
     private val db = Firebase.firestore
     private val auth = Firebase.auth
-    private val storage = Firebase.storage
 
-    private var selectedImageUri: Uri? = null
-    private lateinit var ivProjectImage: ImageView
+    private val selectedImageUris = mutableListOf<Uri>()
+    private lateinit var rvImages: RecyclerView
+    private lateinit var imageAdapter: ImageSelectAdapter
 
-    // 사진 선택을 위한 Launcher
-    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        if (uri != null) {
-            selectedImageUri = uri
-            ivProjectImage.setImageURI(uri)
+    // Cloudinary 설정
+    private val cloudinaryConfig = mapOf(
+        "cloud_name" to "dlotgejuu",
+        "api_key" to "398175322742183",
+        "api_secret" to "j0dWzx_Ke1NSOEmA1pVrWvYY5tE"
+    )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        try {
+            MediaManager.init(requireContext(), cloudinaryConfig)
+        } catch (e: IllegalStateException) {
+            // 이미 초기화된 경우 무시
+        }
+    }
+
+    // 여러 장 선택을 위한 Launcher
+    private val pickMultipleMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
+        if (uris.isNotEmpty()) {
+            selectedImageUris.clear()
+            selectedImageUris.addAll(uris)
+            imageAdapter.notifyDataSetChanged()
         } else {
             Log.d("PhotoPicker", "No media selected")
         }
@@ -41,15 +60,20 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ivProjectImage = view.findViewById(R.id.ivProjectImage)
+        rvImages = view.findViewById(R.id.rvImages)
         val btnSelectImage = view.findViewById<Button>(R.id.btnSelectImage)
         val etTitle = view.findViewById<EditText>(R.id.etTitle)
         val etDescription = view.findViewById<EditText>(R.id.etDescription)
         val etMembers = view.findViewById<EditText>(R.id.etMembers)
         val btnRegister = view.findViewById<Button>(R.id.btnRegister)
 
+        // RecyclerView 설정
+        imageAdapter = ImageSelectAdapter(selectedImageUris)
+        rvImages.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        rvImages.adapter = imageAdapter
+
         btnSelectImage.setOnClickListener {
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
         btnRegister.setOnClickListener {
@@ -68,35 +92,56 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 return@setOnClickListener
             }
 
-            if (selectedImageUri != null) {
-                uploadImageAndSaveData(currentUser.uid, currentUser.email, title, description, members, selectedImageUri!!)
+            if (selectedImageUris.isNotEmpty()) {
+                uploadImagesAndSaveData(currentUser.uid, currentUser.email, title, description, members)
             } else {
-                saveProjectData(currentUser.uid, currentUser.email, title, description, members, null)
+                saveProjectData(currentUser.uid, currentUser.email, title, description, members, emptyList())
             }
         }
     }
 
-    private fun uploadImageAndSaveData(
+    private fun uploadImagesAndSaveData(
         uid: String,
         email: String?,
         title: String,
         description: String,
-        members: String,
-        imageUri: Uri
+        members: String
     ) {
-        val fileName = "project_images/${UUID.randomUUID()}.jpg"
-        val storageRef = storage.reference.child(fileName)
+        val uploadedUrls = mutableListOf<String>()
+        var uploadCount = 0
 
-        storageRef.putFile(imageUri)
-            .addOnSuccessListener {
-                storageRef.downloadUrl.addOnSuccessListener { uri ->
-                    saveProjectData(uid, email, title, description, members, uri.toString())
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.e("Storage", "업로드 실패", e)
-                Toast.makeText(requireContext(), "이미지 업로드 실패", Toast.LENGTH_SHORT).show()
-            }
+        selectedImageUris.forEach { uri ->
+            MediaManager.get().upload(uri)
+                .unsigned("madcamp_winter_2025")
+                .callback(object : UploadCallback {
+                    override fun onStart(requestId: String?) {}
+                    override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}
+
+                    override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                        val imageUrl = resultData?.get("secure_url") as? String
+                        if (imageUrl != null) {
+                            uploadedUrls.add(imageUrl)
+                        }
+                        uploadCount++
+                        
+                        // 모든 이미지가 업로드되었는지 확인
+                        if (uploadCount == selectedImageUris.size) {
+                            saveProjectData(uid, email, title, description, members, uploadedUrls)
+                        }
+                    }
+
+                    override fun onError(requestId: String?, error: ErrorInfo?) {
+                        uploadCount++
+                        Log.e("Cloudinary", "Upload error: ${error?.description}")
+                        
+                        if (uploadCount == selectedImageUris.size) {
+                            saveProjectData(uid, email, title, description, members, uploadedUrls)
+                        }
+                    }
+
+                    override fun onReschedule(requestId: String?, error: ErrorInfo?) {}
+                }).dispatch()
+        }
     }
 
     private fun saveProjectData(
@@ -105,7 +150,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         title: String,
         description: String,
         members: String,
-        imageUrl: String?
+        imageUrls: List<String>
     ) {
         val projectData = hashMapOf(
             "ownerUid" to uid,
@@ -113,7 +158,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             "title" to title,
             "description" to description,
             "members" to members,
-            "imageUrl" to imageUrl,
+            "imageUrls" to imageUrls, // 단일 imageUrl 대신 리스트 형태의 imageUrls로 저장
             "createdAt" to System.currentTimeMillis()
         )
 

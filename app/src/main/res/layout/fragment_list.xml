@@ -18,6 +18,42 @@
         android:gravity="center"
         android:layout_marginBottom="12dp"/>
 
+    <!-- 정렬 버튼 영역 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="8dp">
+
+        <Button
+            android:id="@+id/btnSortLatest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="최신순"
+            style="?android:attr/borderlessButtonStyle"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="|"
+            android:textColor="#888888"
+            android:layout_marginHorizontal="8dp"/>
+
+        <Button
+            android:id="@+id/btnSortLikes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="좋아요순"
+            style="?android:attr/borderlessButtonStyle"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
     <!-- 프로젝트 카드들을 담는 RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

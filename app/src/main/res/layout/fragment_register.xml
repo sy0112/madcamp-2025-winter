@@ -25,20 +25,26 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"/>
 
-    <ImageView
-        android:id="@+id/ivProjectImage"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="선택된 사진"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- 여러 장의 사진을 보여줄 가로 스크롤 RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvImages"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:background="#EEEEEE"
-        android:src="@android:drawable/ic_menu_gallery"
+        android:layout_height="120dp"
+        android:orientation="horizontal"
         android:layout_marginBottom="8dp"/>
 
     <Button
         android:id="@+id/btnSelectImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="사진 선택"
+        android:text="사진 선택 (여러 장 가능)"
         android:layout_marginBottom="16dp"/>
 
     <Button

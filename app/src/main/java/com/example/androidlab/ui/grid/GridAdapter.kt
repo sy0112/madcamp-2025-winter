@@ -1,23 +1,28 @@
 package com.example.androidlab.ui.grid
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.androidlab.R
-import com.example.androidlab.models.Project // 수정됨
+import com.example.androidlab.models.Project
 import com.example.androidlab.ui.detail.DetailFragment
 
 class GridAdapter(
-    private val items: List<Project>,
+    private var items: List<Project>,
     private val onClick: (DetailFragment) -> Unit
 ) : RecyclerView.Adapter<GridAdapter.VH>() {
 
     inner class VH(view: View) : RecyclerView.ViewHolder(view) {
         val img: ImageView = view.findViewById(R.id.imgProject)
         val title: TextView = view.findViewById(R.id.tvTitle)
+        val team: TextView = view.findViewById(R.id.tvTeam)
+        val heartCount: TextView = view.findViewById(R.id.tvHeartCount)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -28,11 +33,21 @@ class GridAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val project = items[position]
-        // images 필드가 비어있지 않은지 확인하는 안전한 코드 추가
-        if (project.images.isNotEmpty()) {
-            holder.img.setImageResource(project.images.first())
+        
+        if (project.imageUrls.isNotEmpty()) {
+            Glide.with(holder.img.context)
+                .load(project.imageUrls.first())
+                .placeholder(ColorDrawable(Color.WHITE))
+                .error(ColorDrawable(Color.WHITE))
+                .centerCrop()
+                .into(holder.img)
+        } else {
+            holder.img.setImageDrawable(ColorDrawable(Color.WHITE))
         }
+        
         holder.title.text = project.title
+        holder.team.text = project.members // 팀원 정보를 표시
+        holder.heartCount.text = project.likedBy.size.toString()
 
         holder.itemView.setOnClickListener {
             onClick(DetailFragment.newInstance(project))
@@ -40,4 +55,9 @@ class GridAdapter(
     }
 
     override fun getItemCount() = items.size
+
+    fun updateItems(newItems: List<Project>) {
+        this.items = newItems
+        notifyDataSetChanged()
+    }
 }
