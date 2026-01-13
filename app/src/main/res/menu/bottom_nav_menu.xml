@@ -1,16 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_grid"
-        android:title="Grid"
-        android:icon="@android:drawable/ic_menu_gallery"/>
+        android:title="Explore"
+        android:icon="@drawable/baseline_explore_24"/>
 
     <item
         android:id="@+id/menu_list"
-        android:title="List"
-        android:icon="@android:drawable/ic_menu_agenda"/>
+        android:title="Archives"
+        android:icon="@drawable/outline_align_horizontal_left_24"/>
 
     <item
         android:id="@+id/menu_mypage"
-        android:title="마이페이지"
-        android:icon="@android:drawable/ic_menu_myplaces"/>
+        android:title="Profile"
+        android:icon="@drawable/round_accessibility_new_24"/>
 </menu>

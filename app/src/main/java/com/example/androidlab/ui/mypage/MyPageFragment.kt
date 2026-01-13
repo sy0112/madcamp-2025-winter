@@ -33,14 +33,14 @@ class MyPageFragment : Fragment(R.layout.fragment_mypage) {
             Toast.makeText(requireContext(), "좋아요한 프로젝트 목록 기능 준비 중입니다.", Toast.LENGTH_SHORT).show()
         }
 
-        // 3. 로그아웃: Firebase 로그아웃 후 로그인 화면으로 이동
-        btnLogout.setOnClickListener {
-            Firebase.auth.signOut()
-            Toast.makeText(requireContext(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
-            
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-        }
+//        // 3. 로그아웃: Firebase 로그아웃 후 로그인 화면으로 이동
+//        btnLogout.setOnClickListener {
+//            Firebase.auth.signOut()
+//            Toast.makeText(requireContext(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+//
+//            val intent = Intent(requireContext(), LoginActivity::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//            startActivity(intent)
+//        }
     }
 }

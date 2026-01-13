@@ -1,24 +1,60 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="#DDD4D6"
+    android:paddingHorizontal="20dp">
 
-<!--    제목-->
+    <!-- 상단 헤더 섹션: 세련된 타이포그래피 적용 -->
     <TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/tvMyProjectsTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="My\nProjects"
+        android:textSize="32sp"
+        android:fontFamily="sans-serif-black"
+        android:textColor="#2D2D2D"
+        android:lineSpacingExtra="-4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="내 프로젝트 관리"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginTop="8dp"
+        android:text="내가 기록한 모든 결과물"
+        android:textSize="14sp"
+        android:textColor="#5E5E5E"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMyProjectsTitle" />
 
+    <!-- 구분선 (세련된 포인트) -->
+    <View
+        android:id="@+id/headerDivider"
+        android:layout_width="376dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="20dp"
+        android:background="#2D2D2D"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
+
+    <!-- 프로젝트 리스트 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMyProjects"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerDivider" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

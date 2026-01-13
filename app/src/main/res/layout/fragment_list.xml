@@ -1,62 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="12dp">
+    android:background="#DDD4D6"
+    android:paddingHorizontal="20dp">
 
-    <!-- 목록 제목 -->
+    <!-- 상단 헤더: 한 줄 제목 디자인 -->
     <TextView
         android:id="@+id/tvProjectListTitle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="프로젝트 목록"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#212121"
-        android:gravity="center"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginTop="24dp"
+        android:text="Project Archives"
+        android:textSize="26sp"
+        android:fontFamily="sans-serif-black"
+        android:textColor="#2D2D2D"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- 정렬 버튼 영역 -->
+    <!-- 정렬 버튼 영역: 콤팩트한 칩(Chip) 스타일 -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/sortLayout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal"
-        android:gravity="left"
-        android:layout_marginBottom="8dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvProjectListTitle">
 
         <Button
             android:id="@+id/btnSortLatest"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="6dp"
+            android:backgroundTint="#F5F5F5"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingHorizontal="12dp"
             android:text="최신순"
-            style="?android:attr/borderlessButtonStyle"
-            android:textSize="14sp"
-            android:textColor="#000000"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="|"
-            android:textColor="#888888"
-            android:layout_marginHorizontal="0dp"/>
+            android:textColor="#2D2D2D"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:cornerRadius="16dp" />
 
         <Button
             android:id="@+id/btnSortLikes"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
+            android:backgroundTint="#F5F5F5"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingHorizontal="12dp"
             android:text="좋아요순"
-            style="?android:attr/borderlessButtonStyle"
-            android:textSize="14sp"
-            android:textColor="#000000"
-            android:textStyle="bold"/>
+            android:textColor="#2D2D2D"
+            android:textSize="11sp"
+            app:cornerRadius="16dp" />
     </LinearLayout>
 
-    <!-- 프로젝트 카드들을 담는 RecyclerView -->
+    <!-- RecyclerView: 리스트 영역 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:clipToPadding="false"
+        android:paddingBottom="20dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sortLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
