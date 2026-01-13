@@ -61,8 +61,4 @@ com.example.androidlab
 3. **Gradle Sync**: 
    - Android Studio에서 프로젝트를 연 후 상단의 Elephant 아이콘을 눌러 라이브러리를 동기화합니다.
 
----
 
-### 💻 개발 상태
-- **진행도**: 핵심 기능(로그인, 다중 이미지 업로드, 실시간 DB 연동, 정렬, 좋아요) 구현 완료.
-- **개발 환경**: Android Studio Koala | Target SDK 36 | Min SDK 24
