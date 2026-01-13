@@ -30,7 +30,10 @@ class MyPageFragment : Fragment(R.layout.fragment_mypage) {
 
         // 2. 하트 누른 프로젝트 보기 (기능 구현 전 토스트)
         btnLikedProjects.setOnClickListener {
-            Toast.makeText(requireContext(), "좋아요한 프로젝트 목록 기능 준비 중입니다.", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, LikedProjectsFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         // 3. 로그아웃: Firebase 로그아웃 후 로그인 화면으로 이동
