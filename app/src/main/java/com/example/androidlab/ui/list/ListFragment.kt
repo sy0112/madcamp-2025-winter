@@ -13,6 +13,9 @@ import com.example.androidlab.R
 import com.example.androidlab.models.Project
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import android.widget.ImageButton
+import com.example.androidlab.ui.register.RegisterFragment
+
 
 /**
  * [ListFragment] 클래스 설명:
@@ -28,6 +31,13 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val btnRegister = view.findViewById<ImageButton>(R.id.btnRegister)
+        btnRegister.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, RegisterFragment())
+                .addToBackStack(null).commit()
+        }
         
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())

@@ -10,6 +10,7 @@
     <!-- 상단 헤더: 한 줄 제목 디자인 -->
     <TextView
         android:id="@+id/tvProjectListTitle"
+        android:layout_marginEnd="8dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -22,6 +23,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- 정렬 버튼 영역: 콤팩트한 칩(Chip) 스타일 -->
+    <ImageButton
+        android:id="@+id/btnRegister"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="12dp"
+        android:background="@android:color/white"
+        android:elevation="3dp"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_input_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#2D2D2D" />
+
     <LinearLayout
         android:id="@+id/sortLayout"
         android:layout_width="wrap_content"
