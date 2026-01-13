@@ -1,56 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<!--    프로젝트 등록 화면 레이아웃
+    ScrollView를 추가하여 화면이 작은 기기(갤럭시 S7 등)에서도
+    모든 입력창과 등록 버튼을 스크롤해서 볼 수 있도록 수정했습니다.
+-->
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <EditText
-        android:id="@+id/etTitle"
-        android:hint="프로젝트 제목"
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/etDescription"
-        android:hint="프로젝트 설명"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <!-- 상단 제목 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="프로젝트 등록"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="24dp"/>
 
-    <EditText
-        android:id="@+id/etMembers"
-        android:hint="팀원 이름"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"/>
+        <!-- 프로젝트 제목 입력창 -->
+        <EditText
+            android:id="@+id/etTitle"
+            android:hint="프로젝트 제목"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="선택된 사진"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
+        <!-- 프로젝트 상세 설명 입력창 -->
+        <EditText
+            android:id="@+id/etDescription"
+            android:hint="프로젝트 설명"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minLines="4"
+            android:gravity="top"/>
 
-    <!-- 여러 장의 사진을 보여줄 가로 스크롤 RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvImages"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp"/>
+        <!-- 함께 진행한 팀원 이름 입력창 -->
+        <EditText
+            android:id="@+id/etMembers"
+            android:hint="팀원 이름"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"/>
 
-    <Button
-        android:id="@+id/btnSelectImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="사진 선택 (여러 장 가능)"
-        android:layout_marginBottom="16dp"/>
+        <!-- 사진 목록 섹션 제목 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="선택된 사진"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
 
-    <Button
-        android:id="@+id/btnRegister"
-        android:text="등록"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
-</LinearLayout>
+        <!-- 선택한 사진 리스트 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvImages"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- 갤러리 열기 버튼 -->
+        <Button
+            android:id="@+id/btnSelectImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="사진 선택 (여러 장 가능)"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- 등록 버튼 (이제 스크롤을 내리면 정상적으로 보입니다) -->
+        <Button
+            android:id="@+id/btnRegister"
+            android:text="등록"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"/>
+
+    </LinearLayout>
+</ScrollView>
