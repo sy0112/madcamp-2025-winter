@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidlab.R
 import com.example.androidlab.models.Project
+import com.example.androidlab.ui.register.RegisterFragment
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 

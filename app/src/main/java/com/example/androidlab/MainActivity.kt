@@ -8,7 +8,7 @@ import androidx.fragment.app.commit
 import com.example.androidlab.ui.detail.DetailFragment
 import com.example.androidlab.ui.grid.GridFragment
 import com.example.androidlab.ui.list.ListFragment
-import com.example.androidlab.ui.register.RegisterFragment
+import com.example.androidlab.ui.mypage.MyPageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -48,8 +48,8 @@ class MainActivity : AppCompatActivity() {
                     openFragment(ListFragment())
                     true
                 }
-                R.id.menu_register -> {
-                    openFragment(RegisterFragment()) // 등록 화면
+                R.id.menu_mypage -> {
+                    openFragment(MyPageFragment()) // 마이페이지 화면
                     true
                 }
                 else -> false

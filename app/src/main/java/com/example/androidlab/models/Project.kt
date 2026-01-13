@@ -16,7 +16,7 @@ data class Project(
     val members: String = "",       // 참여 팀원 명단
     val ownerUid: String = "",      // 등록한 유저의 고유 식별자(UID)
     val ownerEmail: String = "",    // 등록한 유저의 이메일 주소
-    val imageUrls: List<String> = emptyList(), // Cloudinary에 업로드된 이미지 URL 리스트
+    val imageUrls: List<String> = emptyList(), // 이미지 URL 리스트 (DB 필드명과 일치)
     val createdAt: Long = 0,        // 등록 시간 (타임스탬프)
-    val likedBy: List<String> = emptyList() // 좋아요(하트)를 누른 유저들의 UID 리스트
+    val likedBy: List<String> = emptyList() // 좋아요를 누른 유저들의 UID 리스트
 )

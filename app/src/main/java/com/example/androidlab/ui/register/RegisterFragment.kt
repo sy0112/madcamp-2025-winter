@@ -20,9 +20,10 @@ import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.example.androidlab.R
 import com.example.androidlab.ui.grid.GridFragment
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.SetOptions
 
 /**
  * 프로젝트 정보를 입력하고 사진을 업로드하여 등록하는 화면입니다.
@@ -37,6 +38,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
     // firebase의 DB 가져오기
     private val auth = Firebase.auth
     // Firebase Authentication 가져오기
+    private var currentProjectId: String? = null
 
     // 사용자가 선택한 이미지들의 Uri 리스트
     // 코틀린의 리스트에는 크게 두 종류
@@ -87,19 +89,26 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
     // 화면 ui가 완전히 그려진 후 호출되는 함수
     // ui는 User Interface 로 사용자가 앱을 사용할 때 눈으로 보고 손으로 만지는 것
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState) // 상속
+        super.onViewCreated(view, savedInstanceState)
 
-        // 뷰 연결
-        // viewfindviewByID 는 XML 디자인 파일에 있는 뷰를 코틀린 코드의 변수와 연결.
-        // 아까 앞에서 R.layout.fragment_register 이거 함수의 요소로 가져옴.
-        rvImages = view.findViewById(R.id.rvImages) // XML의 RecyclerView를 찾아와서 변수에 할당 (선택된 사진 목록 표시용)
-        val btnSelectImage = view.findViewById<Button>(R.id.btnSelectImage) // "사진 선택" 버튼 찾기
-        val etTitle = view.findViewById<EditText>(R.id.etTitle) // "프로젝트 제목" 입력창 찾기
-        val etDescription = view.findViewById<EditText>(R.id.etDescription) // "프로젝트 설명" 입력창 찾기
-        val etMembers = view.findViewById<EditText>(R.id.etMembers) // "팀원 이름" 입력창 찾기
-        val btnRegister = view.findViewById<Button>(R.id.btnRegister) // "등록" 버튼 찾기
+        rvImages = view.findViewById(R.id.rvImages)
+        val btnSelectImage = view.findViewById<Button>(R.id.btnSelectImage)
+        val etTitle = view.findViewById<EditText>(R.id.etTitle)
+        val etDescription = view.findViewById<EditText>(R.id.etDescription)
+        val etMembers = view.findViewById<EditText>(R.id.etMembers)
+        val btnRegister = view.findViewById<Button>(R.id.btnRegister)
 
-        // 가로 스크롤 형태의 사진 선택 목록 설정
+        // 수정 모드 체크
+        currentProjectId = arguments?.getString("projectId")
+
+        if (currentProjectId != null) {
+            etTitle.setText(arguments?.getString("title"))
+            etDescription.setText(arguments?.getString("description"))
+            etMembers.setText(arguments?.getString("members"))
+            btnRegister.text = "수정 완료"
+        }
+
+        // RecyclerView 설정
         imageAdapter = ImageSelectAdapter(selectedImageUris)
         
         // 가로 스크롤
