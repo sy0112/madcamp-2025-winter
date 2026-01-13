@@ -42,5 +42,6 @@ class ImagePagerAdapter(
         } else {
             super.onBindViewHolder(holder, position, payloads)
         }
+
     }
 }
