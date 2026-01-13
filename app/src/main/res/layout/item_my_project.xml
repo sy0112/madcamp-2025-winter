@@ -1,32 +1,70 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="15dp">
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@android:color/white"
+    app:strokeWidth="0dp">
 
-<!--    프로젝트 제목-->
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="프로젝트 제목"
-        android:textSize="18sp"/>
+        android:padding="16dp">
 
-    <!--    수정 버튼-->
-    <Button
-        android:id="@+id/btnEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="수정"
-        android:layout_marginEnd="5dp"/>
+        <!-- 프로젝트 제목: 굵고 진한 텍스트 -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="프로젝트 제목"
+            android:textColor="#2D2D2D"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-medium"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnEdit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="0" />
 
-    <!--    삭제 버튼-->
-    <Button
-        android:id="@+id/btnDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="삭제"/>
+        <!-- 수정 버튼: 아이콘 중심의 깔끔한 스타일 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEdit"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            app:icon="@android:drawable/ic_menu_edit"
+            app:iconTint="#2D2D2D"
+            app:iconGravity="textStart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnDelete"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+        <!-- 삭제 버튼: 경고의 의미로 레드 포인트 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDelete"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            app:icon="@android:drawable/ic_menu_delete"
+            app:iconTint="#FF5252"
+            app:iconGravity="textStart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
