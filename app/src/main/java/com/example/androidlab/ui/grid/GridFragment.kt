@@ -107,15 +107,19 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
         gridAdapter.updateItems(sortedList)
     }
 
+    /**
+     * 버튼의 선택 상태에 따라 시각적 스타일을 업데이트합니다.
+     * 선택된 버튼은 검은색 글자와 굵은 폰트, 선택되지 않은 버튼은 회색으로 표시됩니다.
+     */
     private fun Button.updateStyle(isSelected: Boolean) {
         if (isSelected) {
             this.setTextColor(Color.BLACK)
             this.setTypeface(null, Typeface.BOLD)
-            this.alpha = 1.0f
+            this.paintFlags = this.paintFlags or android.graphics.Paint.UNDERLINE_TEXT_FLAG // 밑줄 추가로 강조
         } else {
-            this.setTextColor(Color.LTGRAY)
+            this.setTextColor(Color.parseColor("#BBBBBB")) // 더 연한 회색으로 변경
             this.setTypeface(null, Typeface.NORMAL)
-            this.alpha = 0.8f
+            this.paintFlags = this.paintFlags and android.graphics.Paint.UNDERLINE_TEXT_FLAG.inv() // 밑줄 제거
         }
     }
 }

@@ -54,10 +54,10 @@ class LoginActivity : AppCompatActivity() {
      * 클릭 리스너들을 초기화합니다.
      */
     private fun initClick() {
-        binding.btnGoogleLogin.setOnClickListener {
+        binding.btnGoogleLogin.setOnClickListener { // btnGoogleLogin 버튼이 눌렸을 때 무엇을 할 것인지.
             // 로그인 전 기존 세션을 로그아웃하여 항상 계정 선택창이 뜨도록 함
-            mGoogleSignInClient.signOut().addOnCompleteListener {
-                startLoginGoogle()
+            mGoogleSignInClient.signOut().addOnCompleteListener { // 현재 기기에 남아있는 구글 로그인 세션 제거
+                startLoginGoogle() // 실제 로그인 flow 시작
             }
         }
     }
@@ -68,11 +68,15 @@ class LoginActivity : AppCompatActivity() {
     private fun initGoogleSignInClient() {
         //requestIdToken에는 Firebase 콘솔의 웹 클라이언트 ID를 넣어야 합니다.
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("1025195518832-nqhdmr1fctffrti7edst6tadlb5birno.apps.googleusercontent.com")
-            .requestEmail() // 이메일 정보 요청
-            .build()
+            .requestIdToken("1025195518832-nqhdmr1fctffrti7edst6tadlb5birno.apps.googleusercontent.com")  // 이건 google oAuth 2.0 Client ID
+            //client는 내가 만든 앱
+            //  firebase 인증에 필요한 ID 토큰을 요청
+            // firebase 콘솔 -> authentication -> Google 로그인
+            .requestEmail() // 로그인 성공 시 이메일 정보 요청
+            .build() // 위에 설정한 옵션들을 하나의 객체로
             
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+        // 실제 구글 로그인 기능을 수행하는 클라이언트 생성
     }
 
     /**

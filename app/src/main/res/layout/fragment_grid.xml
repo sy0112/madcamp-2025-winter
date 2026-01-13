@@ -1,77 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="15dp">
+    android:background="#DDD4D6"
+    android:paddingHorizontal="20dp">
 
-    <!-- 상단 제목 -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/tvHeader"
-            android:layout_centerInParent="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="프로젝트 목록"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:paddingBottom="10dp"/>
-
-            <ImageButton
-                android:id="@+id/btnRegister"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@android:drawable/ic_input_add"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="등록 버튼"/>
-    </RelativeLayout>
-
-    <!-- 정렬 버튼 영역 -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- 상단 헤더 섹션: 한 줄 제목으로 변경 -->
+    <TextView
+        android:id="@+id/tvHeader"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Explore Projects"
+        android:textSize="26sp"
+        android:fontFamily="sans-serif-black"
+        android:textColor="#2D2D2D"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintEnd_toStartOf="@id/btnRegister"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 정렬 버튼 영역: 버튼 크기를 더 작게(Compact) 조정 -->
+
+    <ImageButton
+        android:id="@+id/btnRegister"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="12dp"
+        android:background="@android:color/white"
+        android:elevation="3dp"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_input_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#2D2D2D" />
+
+    <LinearLayout
+        android:id="@+id/sortLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal"
-        android:gravity="right"
-        android:layout_marginBottom="8dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvHeader">
 
         <Button
             android:id="@+id/btnSortLatest"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="6dp"
+            android:backgroundTint="#F5F5F5"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:text="최신순"
-            style="?android:attr/borderlessButtonStyle"
-            android:textSize="14sp"
-            android:textColor="#000000"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="|"
-            android:textColor="#888888"
-            android:layout_marginHorizontal="8dp"/>
+            android:textColor="#2D2D2D"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:paddingHorizontal="12dp"
+            app:cornerRadius="16dp" />
 
         <Button
             android:id="@+id/btnSortLikes"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
+            android:backgroundTint="#F5F5F5"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:text="좋아요순"
-            style="?android:attr/borderlessButtonStyle"
-            android:textSize="14sp"
-            android:textColor="#000000"
-            android:textStyle="bold"/>
+            android:textColor="#2D2D2D"
+            android:textSize="11sp"
+            android:paddingHorizontal="12dp"
+            app:cornerRadius="16dp" />
     </LinearLayout>
 
     <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
-</LinearLayout>
+        android:layout_marginTop="12dp"
+        android:clipToPadding="false"
+        android:paddingBottom="20dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sortLayout"
+        app:layout_constraintVertical_bias="1.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

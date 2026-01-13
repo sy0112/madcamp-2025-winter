@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#DDD4D6"> <!-- 전체 배경색 통일 -->
 
 
     <!-- Fragment 영역 -->
@@ -12,12 +13,19 @@
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:background="#DDD4D6"/> <!-- 프래그먼트 배경색 통일 -->
 
     <!-- 하단 네비게이션 -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/bottom_nav_menu"/>
+        android:background="#D0BFC2"
+        app:backgroundTint="#D0BFC2"
+        app:elevation="0dp"
+        app:itemIconTint="#333333"
+        app:itemTextColor="#333333"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu" />
 </LinearLayout>
