@@ -6,6 +6,9 @@ package com.example.androidlab.models
  * 반대로 이 객체를 Firestore에 저장할 때 사용됩니다.
  */
 
+
+// 코틀린에서 val은 변수를 한 번 만 초기화할 수 있는 읽기 전용으로 선언할 때 사용. 
+// val은 변경 불가, var은 변경 가능
 data class Project(
     val id: String = "",            // Firestore 문서의 고유 ID
     val title: String = "",         // 프로젝트 제목

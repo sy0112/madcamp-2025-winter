@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         if (currentUser == null) {
             // 로그인이 안 되어 있다면 로그인 화면으로 이동
             val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
+            startActivity(intent) // 새로운 화면 띄우는 명령어
             finish()
             return
         }

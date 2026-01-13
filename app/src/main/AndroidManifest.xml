@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    AndroidManifest.xml 설명:
+    안드로이드 시스템에 앱의 구성 요소(액티비티, 권한 등)와 설정 정보를 알리는 아주 중요한 설정 파일입니다.
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- 인터넷 권한 추가 (Firebase 및 Google 로그인 필수) -->
+    <!-- 인터넷 권한 추가: 외부 서버(Firebase, Cloudinary, Google 로그인)와 통신하기 위해 반드시 필요합니다. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidLab"
         tools:targetApi="31">
 
-        <!-- 앱 시작 시 SplashActivity (유일한 LAUNCHER) -->
+        <!-- 앱 시작 시 가장 먼저 실행되는 스플래시 화면(SplashActivity) -->
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -27,11 +31,12 @@
             </intent-filter>
         </activity>
 
-        <!-- 로그인 화면 (LAUNCHER 제거) -->
+        <!-- 로그인 화면 -->
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
 
+        <!-- 메인 화면 -->
         <activity
             android:name=".MainActivity"
             android:exported="false"
