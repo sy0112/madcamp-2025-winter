@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="right"
+        android:gravity="left"
         android:layout_marginBottom="8dp">
 
         <Button
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:text="|"
             android:textColor="#888888"
-            android:layout_marginHorizontal="8dp"/>
+            android:layout_marginHorizontal="0dp"/>
 
         <Button
             android:id="@+id/btnSortLikes"

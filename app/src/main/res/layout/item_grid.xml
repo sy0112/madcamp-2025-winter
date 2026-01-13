@@ -28,21 +28,25 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="Project Image"/>
 
-            <!-- 하트 표시 (우측 상단) -->
+            <!-- 하트 표시 (우측 상단) - 배경을 둥글게(bg_heart_box) 처리 -->
             <LinearLayout
+                android:id="@+id/layoutHeart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
                 android:layout_margin="8dp"
-                android:background="@android:color/transparent"
-                android:padding="4dp"
+                android:background="@drawable/bg_heart_box"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
 
                 <ImageView
                     android:id="@+id/ivHeart"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/ic_heart_filled"
                     app:tint="#FF0000"/>
 
@@ -50,9 +54,10 @@
                     android:id="@+id/tvHeartCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
+                    android:layout_marginStart="4dp"
                     android:textColor="#FFFFFF"
-                    android:textSize="12sp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
                     android:text="0"/>
             </LinearLayout>
 
