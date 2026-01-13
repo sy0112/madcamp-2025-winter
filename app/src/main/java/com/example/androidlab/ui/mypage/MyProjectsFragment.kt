@@ -24,22 +24,24 @@ class MyProjectsFragment : Fragment(R.layout.fragment_my_projects) {
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.rvMyProjects)
-
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         adapter = MyProjectsAdapter(
             projects = emptyList(),
             onEditClick = { project ->
+                // 수정 시 기존 데이터를 Bundle에 담아 RegisterFragment로 전달
                 val fragment = RegisterFragment()
                 val bundle = Bundle().apply {
                     putString("projectId", project.id)
                     putString("title", project.title)
                     putString("description", project.description)
                     putString("members", project.members)
+                    putStringArrayList("imageUrls", ArrayList(project.imageUrls))
                 }
                 fragment.arguments = bundle
 
-                parentFragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment)
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, fragment)
                     .addToBackStack(null)
                     .commit()
             },
@@ -51,20 +53,11 @@ class MyProjectsFragment : Fragment(R.layout.fragment_my_projects) {
                         db.collection("projects").document(project.id)
                             .delete()
                             .addOnSuccessListener {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "${project.title} 삭제 성공",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast.makeText(requireContext(), "${project.title} 삭제 성공", Toast.LENGTH_SHORT).show()
                                 fetchMyProjects()
                             }
                             .addOnFailureListener { e ->
-                                Toast.makeText(
-                                    requireContext(),
-                                    "삭제 실패: ${e.message}",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                Toast.makeText(requireContext(), "삭제 실패: ${e.message}", Toast.LENGTH_SHORT).show()
                             }
                     }
                     .setNegativeButton("취소", null).show()
@@ -81,11 +74,8 @@ class MyProjectsFragment : Fragment(R.layout.fragment_my_projects) {
             .whereEqualTo("ownerUid", uid)
             .get()
             .addOnSuccessListener { result ->
-                val myProjectList = mutableListOf<Project>()
-
-                for (document in result) {
-                    val project = document.toObject(Project::class.java).copy(id = document.id)
-                    myProjectList.add(project)
+                val myProjectList = result.map { document ->
+                    document.toObject(Project::class.java).copy(id = document.id)
                 }
                 adapter.updateProjects(myProjectList)
             }
