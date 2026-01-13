@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidlab.R
 import com.example.androidlab.models.Project
+import com.example.androidlab.ui.register.RegisterFragment
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -32,6 +34,20 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
                 .commit()
         }
         recyclerView.adapter = gridAdapter
+
+        // 1. 레이아웃에서 이미지 버튼 찾기
+        val btnRegister = view.findViewById<ImageButton>(R.id.btnRegister)
+
+        // 2. 버튼 클릭 리스너 설정
+        btnRegister.setOnClickListener {
+            //3. RegisterFragment로 화면 전환
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, RegisterFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+
 
         // 정렬 버튼 설정
         view.findViewById<Button>(R.id.btnSortLatest).setOnClickListener {

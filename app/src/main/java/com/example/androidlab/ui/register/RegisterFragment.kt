@@ -17,14 +17,16 @@ import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.example.androidlab.R
 import com.example.androidlab.ui.grid.GridFragment
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.SetOptions
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 
     private val db = Firebase.firestore
     private val auth = Firebase.auth
+    private var currentProjectId: String? = null
 
     private val selectedImageUris = mutableListOf<Uri>()
     private lateinit var rvImages: RecyclerView
@@ -66,6 +68,16 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         val etDescription = view.findViewById<EditText>(R.id.etDescription)
         val etMembers = view.findViewById<EditText>(R.id.etMembers)
         val btnRegister = view.findViewById<Button>(R.id.btnRegister)
+
+        // 수정 모드 체크
+        currentProjectId = arguments?.getString("projectId")
+
+        if (currentProjectId != null) {
+            etTitle.setText(arguments?.getString("title"))
+            etDescription.setText(arguments?.getString("description"))
+            etMembers.setText(arguments?.getString("members"))
+            btnRegister.text = "수정 완료"
+        }
 
         // RecyclerView 설정
         imageAdapter = ImageSelectAdapter(selectedImageUris)
@@ -124,7 +136,6 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                         }
                         uploadCount++
                         
-                        // 모든 이미지가 업로드되었는지 확인
                         if (uploadCount == selectedImageUris.size) {
                             saveProjectData(uid, email, title, description, members, uploadedUrls)
                         }
@@ -152,27 +163,42 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         members: String,
         imageUrls: List<String>
     ) {
-        val projectData = hashMapOf(
+        // Any? 타입을 명시하여 다양한 타입(String, Long, List)을 허용합니다.
+        val projectData = mutableMapOf<String, Any?>(
             "ownerUid" to uid,
             "ownerEmail" to email,
             "title" to title,
             "description" to description,
             "members" to members,
-            "imageUrls" to imageUrls, // 단일 imageUrl 대신 리스트 형태의 imageUrls로 저장
-            "createdAt" to System.currentTimeMillis()
+            "createdAt" to System.currentTimeMillis(),
+            "imageUrls" to imageUrls // 리스트 데이터 허용
         )
 
-        db.collection("projects")
-            .add(projectData)
-            .addOnSuccessListener {
-                Toast.makeText(requireContext(), "프로젝트가 등록되었습니다.", Toast.LENGTH_SHORT).show()
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainer, GridFragment())
-                    .commit()
-            }
-            .addOnFailureListener { e ->
-                Log.e("Firestore", "저장 에러", e)
-                Toast.makeText(requireContext(), "등록 실패", Toast.LENGTH_SHORT).show()
-            }
+        if (currentProjectId != null) {
+            // 수정 모드: 기존 문서 업데이트
+            db.collection("projects").document(currentProjectId!!)
+                .set(projectData, SetOptions.merge())
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "수정되었습니다.", Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.popBackStack()
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "수정 실패", e)
+                    Toast.makeText(requireContext(), "수정 실패", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            // 등록 모드: 새 문서 추가
+            db.collection("projects").add(projectData)
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "프로젝트가 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, GridFragment())
+                        .commit()
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "등록 실패", e)
+                    Toast.makeText(requireContext(), "등록 실패", Toast.LENGTH_SHORT).show()
+                }
+        }
     }
 }
