@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.androidlab.R
 import com.example.androidlab.models.Project
 import com.example.androidlab.ui.register.RegisterFragment
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
 /**
  * [GridFragment] 클래스 설명:
@@ -30,11 +30,20 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1. RecyclerView 설정
+        // 1. 등록 버튼 이벤트 추가 (+)
+        val btnRegister = view.findViewById<ImageButton>(R.id.btnRegister)
+        btnRegister.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, RegisterFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        // 2. RecyclerView 설정
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
 
-        // 2. 어댑터 초기화
+        // 3. 어댑터 초기화
         gridAdapter = GridAdapter(emptyList()) { detailFragment ->
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, detailFragment)
@@ -43,7 +52,7 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
         }
         recyclerView.adapter = gridAdapter
 
-        // 3. 정렬 버튼 이벤트 설정
+        // 4. 정렬 버튼 이벤트 설정
         val btnSortLatest = view.findViewById<Button>(R.id.btnSortLatest)
         val btnSortLikes = view.findViewById<Button>(R.id.btnSortLikes)
 
@@ -57,7 +66,7 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
             sortAndDisplay()
         }
 
-        // 4. 데이터 불러오기 시작
+        // 5. 데이터 불러오기 시작
         fetchProjectsFromFirestore()
     }
 
@@ -78,22 +87,17 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
             }
     }
 
-    /**
-     * 정렬 로직 및 버튼 UI 업데이트
-     */
     private fun sortAndDisplay() {
         val btnSortLatest = view?.findViewById<Button>(R.id.btnSortLatest)
         val btnSortLikes = view?.findViewById<Button>(R.id.btnSortLikes)
 
         val sortedList = when (currentSortMode) {
             "latest" -> {
-                // 최신순 활성화 스타일
                 btnSortLatest?.updateStyle(true)
                 btnSortLikes?.updateStyle(false)
                 allProjects.sortedByDescending { it.createdAt }
             }
             "likes" -> {
-                // 좋아요순 활성화 스타일
                 btnSortLatest?.updateStyle(false)
                 btnSortLikes?.updateStyle(true)
                 allProjects.sortedByDescending { it.likedBy.size }
@@ -103,16 +107,15 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
         gridAdapter.updateItems(sortedList)
     }
 
-    // 버튼의 스타일(색상, 굵기)을 변경하는 확장 함수
     private fun Button.updateStyle(isSelected: Boolean) {
         if (isSelected) {
-            this.setTextColor(Color.BLACK) // 선택 시 검정색
-            this.setTypeface(null, Typeface.BOLD) // 선택 시 굵게
+            this.setTextColor(Color.BLACK)
+            this.setTypeface(null, Typeface.BOLD)
             this.alpha = 1.0f
         } else {
-            this.setTextColor(Color.LTGRAY) // 미선택 시 밝은 회색
-            this.setTypeface(null, Typeface.NORMAL) // 미선택 시 보통 굵기
-            this.alpha = 0.8f // 약간 투명하게
+            this.setTextColor(Color.LTGRAY)
+            this.setTypeface(null, Typeface.NORMAL)
+            this.alpha = 0.8f
         }
     }
 }
