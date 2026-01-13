@@ -31,6 +31,7 @@ import java.io.FileOutputStream
  * [RegisterFragment] 설명:
  * 프로젝트 신규 등록 및 기존 프로젝트 수정을 담당하는 화면입니다.
  * 사진 선택 및 삭제(X 버튼) 기능이 포함되어 있습니다.
+ * 프로젝트 정보를 입력하고 사진을 업로드하여 등록하거나 수정하는 화면입니다.
  */
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 
@@ -38,6 +39,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
     private val auth = Firebase.auth
 
     // 최종적으로 저장될 이미지들의 Uri 목록 (로컬 Uri 또는 서버 URL 기반 Uri)
+    private var currentProjectId: String? = null
+
     private val selectedImageUris = mutableListOf<Uri>()
     private var projectId: String? = null
 
@@ -118,9 +121,14 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         }
 
         btnRegister.setOnClickListener {
-            val currentUser = auth.currentUser ?: return@setOnClickListener
+            val currentUser = auth.currentUser
+            if (currentUser == null) {
+                Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val title = etTitle.text.toString().trim()
-            val description = etDescription.text.toString().trim()
+            val description = etDescription.text.toString().trim() 
             val members = etMembers.text.toString().trim()
 
             if (title.isEmpty() || description.isEmpty() || members.isEmpty()) {
@@ -225,19 +233,34 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             "createdAt" to System.currentTimeMillis()
         )
 
-        val task = if (projectId == null) {
-            db.collection("projects").add(projectData)
+        if (currentProjectId != null) {
+            // [수정 모드]
+            db.collection("projects").document(currentProjectId!!)
+                .set(projectData, SetOptions.merge())
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "수정되었습니다.", Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, GridFragment())
+                        .commit()
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "수정 에러", e)
+                    Toast.makeText(requireContext(), "수정 실패", Toast.LENGTH_SHORT).show()
+                }
         } else {
-            db.collection("projects").document(projectId!!).set(projectData)
-        }
-
-        task.addOnSuccessListener {
-            Toast.makeText(requireContext(), "저장되었습니다.", Toast.LENGTH_SHORT).show()
-            parentFragmentManager.popBackStack()
-        }.addOnFailureListener {
-            btnRegister.isEnabled = true
-            btnRegister.text = "저장"
-            Toast.makeText(requireContext(), "실패하였습니다.", Toast.LENGTH_SHORT).show()
+            // [등록 모드]
+            db.collection("projects")
+                .add(projectData)
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "프로젝트가 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, GridFragment())
+                        .commit()
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "등록 에러", e)
+                    Toast.makeText(requireContext(), "등록 실패", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 }

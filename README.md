@@ -1,4 +1,4 @@
-# 📱 프로젝트 전시 앱 (Madcamp 2025 Winter)
+# 📱 Project Hub (Madcamp 2025 Winter)
 
 **Madcamp 2025 Winter** 시즌 동안 개발된 프로젝트 전시 및 소셜 상호작용 애플리케이션입니다. 사용자들이 자신의 프로젝트와 여러 장의 사진을 등록하고, 다른 이들의 프로젝트를 둘러보며 '하트(좋아요)'를 통해 반응을 남길 수 있는 플랫폼입니다.
 
@@ -61,8 +61,4 @@ com.example.androidlab
 3. **Gradle Sync**: 
    - Android Studio에서 프로젝트를 연 후 상단의 Elephant 아이콘을 눌러 라이브러리를 동기화합니다.
 
----
 
-### 💻 개발 상태
-- **진행도**: 핵심 기능(로그인, 다중 이미지 업로드, 실시간 DB 연동, 정렬, 좋아요) 구현 완료.
-- **개발 환경**: Android Studio Koala | Target SDK 36 | Min SDK 24
