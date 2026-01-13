@@ -233,34 +233,48 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             "createdAt" to System.currentTimeMillis()
         )
 
-        if (currentProjectId != null) {
-            // [수정 모드]
-            db.collection("projects").document(currentProjectId!!)
-                .set(projectData, SetOptions.merge())
-                .addOnSuccessListener {
-                    Toast.makeText(requireContext(), "수정되었습니다.", Toast.LENGTH_SHORT).show()
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragmentContainer, GridFragment())
-                        .commit()
-                }
-                .addOnFailureListener { e ->
-                    Log.e("Firestore", "수정 에러", e)
-                    Toast.makeText(requireContext(), "수정 실패", Toast.LENGTH_SHORT).show()
-                }
+//        if (currentProjectId != null) {
+//            // [수정 모드]
+//            db.collection("projects").document(currentProjectId!!)
+//                .set(projectData, SetOptions.merge())
+//                .addOnSuccessListener {
+//                    Toast.makeText(requireContext(), "수정되었습니다.", Toast.LENGTH_SHORT).show()
+//                    parentFragmentManager.beginTransaction()
+//                        .replace(R.id.fragmentContainer, GridFragment())
+//                        .commit()
+//                }
+//                .addOnFailureListener { e ->
+//                    Log.e("Firestore", "수정 에러", e)
+//                    Toast.makeText(requireContext(), "수정 실패", Toast.LENGTH_SHORT).show()
+//                }
+//        } else {
+//            // [등록 모드]
+//            db.collection("projects")
+//                .add(projectData)
+//                .addOnSuccessListener {
+//                    Toast.makeText(requireContext(), "프로젝트가 등록되었습니다.", Toast.LENGTH_SHORT).show()
+//                    parentFragmentManager.beginTransaction()
+//                        .replace(R.id.fragmentContainer, GridFragment())
+//                        .commit()
+//                }
+//                .addOnFailureListener { e ->
+//                    Log.e("Firestore", "등록 에러", e)
+//                    Toast.makeText(requireContext(), "등록 실패", Toast.LENGTH_SHORT).show()
+//                }
+//        }
+        val task = if (projectId == null) {
+            db.collection("projects").add(projectData)
         } else {
-            // [등록 모드]
-            db.collection("projects")
-                .add(projectData)
-                .addOnSuccessListener {
-                    Toast.makeText(requireContext(), "프로젝트가 등록되었습니다.", Toast.LENGTH_SHORT).show()
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragmentContainer, GridFragment())
-                        .commit()
-                }
-                .addOnFailureListener { e ->
-                    Log.e("Firestore", "등록 에러", e)
-                    Toast.makeText(requireContext(), "등록 실패", Toast.LENGTH_SHORT).show()
-                }
+            db.collection("projects").document(projectId!!).set(projectData)
+        }
+
+        task.addOnSuccessListener {
+            Toast.makeText(requireContext(), "저장되었습니다.", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.popBackStack()
+        }.addOnFailureListener {
+            btnRegister.isEnabled = true
+            btnRegister.text = "저장"
+            Toast.makeText(requireContext(), "실패하였습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 }
