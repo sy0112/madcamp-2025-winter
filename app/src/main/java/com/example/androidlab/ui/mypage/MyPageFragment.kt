@@ -10,6 +10,8 @@ import com.example.androidlab.LoginActivity
 import com.example.androidlab.R
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class MyPageFragment : Fragment(R.layout.fragment_mypage) {
 
@@ -30,17 +32,30 @@ class MyPageFragment : Fragment(R.layout.fragment_mypage) {
 
         // 2. 하트 누른 프로젝트 보기 (기능 구현 전 토스트)
         btnLikedProjects.setOnClickListener {
-            Toast.makeText(requireContext(), "좋아요한 프로젝트 목록 기능 준비 중입니다.", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, LikedProjectsFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
-//        // 3. 로그아웃: Firebase 로그아웃 후 로그인 화면으로 이동
-//        btnLogout.setOnClickListener {
-//            Firebase.auth.signOut()
-//            Toast.makeText(requireContext(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
-//
-//            val intent = Intent(requireContext(), LoginActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//            startActivity(intent)
-//        }
+        // 3. 로그아웃: Firebase 로그아웃 후 로그인 화면으로 이동
+        btnLogout.setOnClickListener {
+            Firebase.auth.signOut()
+
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("1025195518832-nqhdmr1fctffrti7edst6tadlb5birno.apps.googleusercontent.com").requestEmail().build()
+
+            GoogleSignIn.getClient(requireActivity(), gso).signOut().addOnCompleteListener {
+                Toast.makeText(requireContext(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+
+                requireActivity().finish()
+            }
+            
+
+        }
     }
 }
