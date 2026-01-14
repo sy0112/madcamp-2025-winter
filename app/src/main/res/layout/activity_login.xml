@@ -15,17 +15,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- 앱 로고 또는 아이콘 -->
+
+    <!-- 웰컴 메시지 -->
+
     <ImageView
         android:id="@+id/ivLogo"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="100dp"
+        android:layout_width="383dp"
+        android:layout_height="188dp"
+        android:layout_marginTop="92dp"
         android:src="@drawable/icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- 웰컴 메시지 -->
     <TextView
         android:id="@+id/tvWelcome"
         android:layout_width="wrap_content"

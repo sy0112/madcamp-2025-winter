@@ -6,8 +6,8 @@
     <!-- 로고 이미지 -->
     <ImageView
         android:id="@+id/splash_logo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="421dp"
+        android:layout_height="925dp"
         android:layout_gravity="center"
         android:src="@drawable/splash_image" />
 </FrameLayout>
