@@ -75,11 +75,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="18dp"
-                android:layout_marginBottom="36dp"
+                android:layout_marginBottom="28dp"
                 android:background="@android:color/white"
                 android:elevation="4dp"
                 android:textSize="15sp"
                 android:textColorHint="#BCBCBC"/>
+
+            <!-- GitHub Link 섹션 -->
+            <TextView android:text="GitHub Repository (Optional)" android:textSize="13sp" android:textStyle="bold" android:textColor="#444444" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:layout_marginStart="4dp"/>
+            <EditText
+                android:id="@+id/etGithubUrl"
+                android:hint="https://github.com/your-repo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="18dp"
+                android:layout_marginBottom="36dp"
+                android:background="@android:color/white"
+                android:elevation="4dp"
+                android:textSize="15sp"
+                android:textColorHint="#BCBCBC"
+                android:inputType="textUri"/>
 
             <!-- 사진 섹션 -->
             <LinearLayout
@@ -125,7 +140,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- 🌟 폭죽 효과 뷰 (최상단 배치) -->
+    <!-- 폭죽 효과 뷰 -->
     <nl.dionsegijn.konfetti.xml.KonfettiView
         android:id="@+id/konfettiView"
         android:layout_width="match_parent"

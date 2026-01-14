@@ -5,7 +5,10 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,16 +17,19 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.androidlab.R
+import com.example.androidlab.models.Comment
 import com.example.androidlab.models.Project
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 
 class DetailFragment : Fragment(R.layout.fragment_detail) {
@@ -35,6 +41,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private lateinit var ivLike: ImageView
     private lateinit var tvLikeCount: TextView
     private lateinit var layoutLike: View
+    private lateinit var commentAdapter: CommentAdapter
 
     companion object {
         fun newInstance(project: Project): DetailFragment {
@@ -43,6 +50,10 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             args.putString("projectId", project.id)
             args.putString("title", project.title)
             args.putString("description", project.description)
+            args.putString("githubUrl", project.githubUrl)
+            args.putString("members", project.members)
+            args.putString("ownerUid", project.ownerUid)
+            args.putString("ownerEmail", project.ownerEmail)
             args.putStringArrayList("imageUrls", ArrayList(project.imageUrls))
             args.putStringArrayList("likedBy", ArrayList(project.likedBy))
             args.putLong("createdAt", project.createdAt)
@@ -57,15 +68,31 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         val projectId = arguments?.getString("projectId") ?: return
         val title = arguments?.getString("title") ?: ""
         val description = arguments?.getString("description") ?: ""
-        val imageUrls = arguments?.getStringArrayList("imageUrls") ?: listOf<String>()
-        val likedBy = arguments?.getStringArrayList("likedBy") ?: listOf<String>()
+        val githubUrl = arguments?.getString("githubUrl") ?: ""
+        val members = arguments?.getString("members") ?: ""
+        val ownerUid = arguments?.getString("ownerUid") ?: ""
+        val ownerEmail = arguments?.getString("ownerEmail") ?: ""
+        val imageUrls = arguments?.getStringArrayList("imageUrls") ?: arrayListOf<String>()
+        val likedBy = arguments?.getStringArrayList("likedBy") ?: arrayListOf<String>()
         val createdAt = arguments?.getLong("createdAt") ?: 0L
 
-        project = Project(projectId, title, description, "", "", "", imageUrls, createdAt, likedBy)
+        project = Project(
+            id = projectId,
+            title = title,
+            description = description,
+            members = members,
+            githubUrl = githubUrl,
+            ownerUid = ownerUid,
+            ownerEmail = ownerEmail,
+            imageUrls = imageUrls,
+            createdAt = createdAt,
+            likedBy = likedBy
+        )
 
         val viewPager = view.findViewById<ViewPager2>(R.id.viewPager)
         val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
         val tvDescription = view.findViewById<TextView>(R.id.tvDescription)
+        val layoutGithub = view.findViewById<View>(R.id.layoutGithub)
         ivLike = view.findViewById(R.id.ivLike)
         tvLikeCount = view.findViewById(R.id.tvLikeCount)
         layoutLike = view.findViewById(R.id.layoutLike)
@@ -77,6 +104,23 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         viewPager.adapter = DetailImageAdapter(project.imageUrls)
 
         updateLikeUI()
+
+        layoutGithub.setOnClickListener {
+            if (project.githubUrl.isNotEmpty()) {
+                var url = project.githubUrl
+                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    url = "https://" + url
+                }
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "유효하지 않은 주소입니다.", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(requireContext(), "등록된 GitHub 링크가 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         layoutLike.setOnClickListener {
             toggleLike()
@@ -96,8 +140,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             newLikedBy.remove(user.uid)
             docRef.update("likedBy", FieldValue.arrayRemove(user.uid))
         } else {
-            playFunnyHeartAnim(layoutLike) 
-            playCenterHeartAnim()         // 🌟 업데이트된 중앙 애니메이션 호출
+            playFunnyHeartAnim(layoutLike)
+            playCenterHeartAnim()
             newLikedBy.add(user.uid)
             docRef.update("likedBy", FieldValue.arrayUnion(user.uid))
         }
@@ -121,15 +165,12 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private fun playFunnyHeartAnim(view: View) {
         val shake = ObjectAnimator.ofFloat(view, "translationX", 0f, 15f, -15f, 15f, -15f, 0f)
         shake.duration = 250
-
         val rotate = ObjectAnimator.ofFloat(view, "rotationY", 0f, 360f)
         rotate.duration = 500
-
         val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.4f, 1f)
         val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.4f, 1f)
         val scale = ObjectAnimator.ofPropertyValuesHolder(view, scaleX, scaleY)
         scale.duration = 400
-
         AnimatorSet().apply {
             playSequentially(shake, rotate)
             playTogether(rotate, scale)
@@ -137,23 +178,19 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
     }
 
-    // 🌟 1200ms 동안 천천히 커지며 부드럽게 사라지는 애니메이션
     private fun playCenterHeartAnim() {
         val ivBigHeart = view?.findViewById<ImageView>(R.id.ivBigHeart) ?: return
-        
         ivBigHeart.visibility = View.VISIBLE
         ivBigHeart.alpha = 1f
         ivBigHeart.scaleX = 0f
         ivBigHeart.scaleY = 0f
-
         val scaleX = ObjectAnimator.ofFloat(ivBigHeart, View.SCALE_X, 0f, 4.5f)
         val scaleY = ObjectAnimator.ofFloat(ivBigHeart, View.SCALE_Y, 0f, 4.5f)
         val alpha = ObjectAnimator.ofFloat(ivBigHeart, View.ALPHA, 1f, 0f)
-
         AnimatorSet().apply {
             playTogether(scaleX, scaleY, alpha)
-            duration = 1200 // 더 천천히 (기존 800ms -> 1200ms)
-            interpolator = AccelerateDecelerateInterpolator() // 시작과 끝이 더 부드럽게
+            duration = 1200
+            interpolator = AccelerateDecelerateInterpolator()
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     ivBigHeart.visibility = View.GONE
@@ -165,28 +202,79 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     private fun setupComments(view: View) {
         val rvComments = view.findViewById<RecyclerView>(R.id.rvComments)
+        val etComment = view.findViewById<EditText>(R.id.etComment)
+        val btnSendComment = view.findViewById<ImageButton>(R.id.btnSendComment)
+
+        // 어댑터 초기화 및 리사이클러뷰 설정
+        commentAdapter = CommentAdapter(emptyList())
         rvComments.layoutManager = LinearLayoutManager(requireContext())
+        rvComments.adapter = commentAdapter
+
+        // 실시간 댓글 목록 불러오기
+        db.collection("projects").document(project.id)
+            .collection("comments")
+            .orderBy("createdAt", Query.Direction.ASCENDING)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("DetailFragment", "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null) {
+                    val comments = snapshot.toObjects(Comment::class.java)
+                    commentAdapter.updateComments(comments)
+                }
+            }
+
+        // 댓글 전송 버튼 클릭 리스너
+        btnSendComment.setOnClickListener {
+            val content = etComment.text.toString().trim()
+            val user = auth.currentUser
+
+            if (user == null) {
+                Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (content.isEmpty()) {
+                Toast.makeText(requireContext(), "댓글 내용을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val commentData = hashMapOf(
+                "userId" to user.uid,
+                "userName" to (user.displayName ?: "익명"),
+                "userProfileUrl" to (user.photoUrl?.toString() ?: ""),
+                "content" to content,
+                "createdAt" to System.currentTimeMillis()
+            )
+
+            db.collection("projects").document(project.id)
+                .collection("comments")
+                .add(commentData)
+                .addOnSuccessListener {
+                    etComment.text.clear()
+                    Toast.makeText(requireContext(), "댓글이 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    Log.e("DetailFragment", "댓글 등록 에러", e)
+                    Toast.makeText(requireContext(), "댓글 등록 실패", Toast.LENGTH_SHORT).show()
+                }
+        }
     }
 }
 
 class DetailImageAdapter(private val imageUrls: List<String>) :
     RecyclerView.Adapter<DetailImageAdapter.ViewHolder>() {
-
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageView)
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_image_pager, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_image_pager, parent, false)
         return ViewHolder(view)
     }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Glide.with(holder.itemView.context)
-            .load(imageUrls[position])
-            .into(holder.imageView)
+        Glide.with(holder.itemView.context).load(imageUrls[position]).into(holder.imageView)
     }
-
     override fun getItemCount(): Int = imageUrls.size
 }

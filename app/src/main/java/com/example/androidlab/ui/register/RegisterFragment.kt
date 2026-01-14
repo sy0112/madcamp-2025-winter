@@ -69,6 +69,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         val etTitle = view.findViewById<EditText>(R.id.etTitle)
         val etDescription = view.findViewById<EditText>(R.id.etDescription)
         val etMembers = view.findViewById<EditText>(R.id.etMembers)
+        val etGithubUrl = view.findViewById<EditText>(R.id.etGithubUrl) // 🌟 추가
         val btnRegister = view.findViewById<Button>(R.id.btnRegister)
 
         currentProjectId = arguments?.getString("projectId")
@@ -77,10 +78,10 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             etTitle.setText(arguments?.getString("title"))
             etDescription.setText(arguments?.getString("description"))
             etMembers.setText(arguments?.getString("members"))
+            etGithubUrl.setText(arguments?.getString("githubUrl")) // 🌟 추가
             btnRegister.text = "수정 완료"
         }
 
-        // 🌟 수정: 삭제 클릭 콜백(onRemoveClick)을 추가하여 초기화
         imageAdapter = ImageSelectAdapter(selectedImageUris) { position ->
             selectedImageUris.removeAt(position)
             imageAdapter.notifyDataSetChanged()
@@ -103,6 +104,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             val title = etTitle.text.toString().trim()
             val description = etDescription.text.toString().trim()
             val members = etMembers.text.toString().trim()
+            val githubUrl = etGithubUrl.text.toString().trim() // 🌟 추가
 
             if (title.isEmpty() || description.isEmpty() || members.isEmpty()) {
                 Toast.makeText(requireContext(), "모든 필드를 입력해주세요.", Toast.LENGTH_SHORT).show()
@@ -110,9 +112,9 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             }
 
             if (selectedImageUris.isNotEmpty()) {
-                uploadImagesAndSaveData(currentUser.uid, currentUser.email, title, description, members)
+                uploadImagesAndSaveData(currentUser.uid, currentUser.email, title, description, members, githubUrl)
             } else {
-                saveProjectData(currentUser.uid, currentUser.email, title, description, members, emptyList())
+                saveProjectData(currentUser.uid, currentUser.email, title, description, members, githubUrl, emptyList())
             }
         }
     }
@@ -122,7 +124,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         email: String?,
         title: String,
         description: String,
-        members: String
+        members: String,
+        githubUrl: String // 🌟 추가
     ) {
         val uploadedUrls = mutableListOf<String>()
         var uploadCount = 0
@@ -139,14 +142,14 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                         if (imageUrl != null) uploadedUrls.add(imageUrl)
                         uploadCount++
                         if (uploadCount == selectedImageUris.size) {
-                            saveProjectData(uid, email, title, description, members, uploadedUrls)
+                            saveProjectData(uid, email, title, description, members, githubUrl, uploadedUrls)
                         }
                     }
 
                     override fun onError(requestId: String?, error: ErrorInfo?) {
                         uploadCount++
                         if (uploadCount == selectedImageUris.size) {
-                            saveProjectData(uid, email, title, description, members, uploadedUrls)
+                            saveProjectData(uid, email, title, description, members, githubUrl, uploadedUrls)
                         }
                     }
 
@@ -161,6 +164,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         title: String,
         description: String,
         members: String,
+        githubUrl: String, // 🌟 추가
         imageUrls: List<String>
     ) {
         val projectData = mutableMapOf<String, Any?>(
@@ -169,6 +173,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             "title" to title,
             "description" to description,
             "members" to members,
+            "githubUrl" to githubUrl, // 🌟 추가
             "createdAt" to System.currentTimeMillis()
         )
 

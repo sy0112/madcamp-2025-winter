@@ -5,15 +5,12 @@ package com.example.androidlab.models
  * Firestore의 데이터를 이 객체 형식으로 자동으로 변환하거나,
  * 반대로 이 객체를 Firestore에 저장할 때 사용됩니다.
  */
-
-
-// 코틀린에서 val은 변수를 한 번 만 초기화할 수 있는 읽기 전용으로 선언할 때 사용. 
-// val은 변경 불가, var은 변경 가능
 data class Project(
     val id: String = "",            // Firestore 문서의 고유 ID
     val title: String = "",         // 프로젝트 제목
     val description: String = "",   // 프로젝트 상세 설명
     val members: String = "",       // 참여 팀원 명단
+    val githubUrl: String = "",     // 🌟 추가: 깃허브 주소 링크
     val ownerUid: String = "",      // 등록한 유저의 고유 식별자(UID)
     val ownerEmail: String = "",    // 등록한 유저의 이메일 주소
     val imageUrls: List<String> = emptyList(), // 이미지 URL 리스트 (DB 필드명과 일치)
