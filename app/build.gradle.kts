@@ -85,6 +85,9 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("com.google.android.material:material:1.11.0")
 
+    // Konfetti (폭죽 효과)
+    implementation("nl.dionsegijn:konfetti-xml:2.0.4")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

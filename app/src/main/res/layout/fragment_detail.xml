@@ -1,188 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="#FFFFFF"
-    android:scrollbars="none">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- 기존 스크롤 뷰 -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="40dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:background="#FFFFFF"
+        android:scrollbars="none">
 
-        <!-- 상단 이미지 카드 슬라이더 -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardViewPager"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="20dp"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="12dp"
-            app:layout_constraintDimensionRatio="1:1.2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:layout_height="wrap_content"
+            android:paddingBottom="40dp">
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPager"
+            <!-- 상단 이미지 카드 슬라이더 -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewPager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#F5F5F5"/>
-        </androidx.cardview.widget.CardView>
+                android:layout_height="0dp"
+                android:layout_margin="20dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="12dp"
+                app:layout_constraintDimensionRatio="1:1.2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- 제목 섹션 -->
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="28dp"
-            android:layout_marginEnd="16dp"
-            android:fontFamily="sans-serif-black"
-            android:text="Project Title"
-            android:textColor="#2D2D2D"
-            android:textSize="28sp"
-            android:letterSpacing="-0.02"
-            app:layout_constraintEnd_toStartOf="@id/layoutLike"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardViewPager" />
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#F5F5F5"/>
+            </androidx.cardview.widget.CardView>
 
-        <!-- 좋아요 버튼 -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/layoutLike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@id/tvTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvTitle">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="8dp">
-
-                <ImageView
-                    android:id="@+id/ivLike"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_heart_outline"
-                    app:tint="#FF5252" />
-
-                <TextView
-                    android:id="@+id/tvLikeCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="0"
-                    android:textColor="#2D2D2D"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:id="@+id/tvDetailDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif-light"
-            android:text="2025.01.01"
-            android:textColor="#5E5E5E"
-            android:textSize="13sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
-
-        <!-- 상세 설명 -->
-        <TextView
-            android:id="@+id/tvDescription"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="20dp"
-            android:fontFamily="sans-serif"
-            android:lineSpacingExtra="6sp"
-            android:text="상세 설명입니다."
-            android:textColor="#333333"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDetailDate" />
-
-        <!-- 덧글 섹션 시작 -->
-        <View
-            android:id="@+id/commentDivider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="32dp"
-            android:background="#F0F0F0"
-            app:layout_constraintTop_toBottomOf="@id/tvDescription" />
-
-        <TextView
-            android:id="@+id/tvCommentLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:fontFamily="sans-serif-black"
-            android:text="Comments"
-            android:textColor="#2D2D2D"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/commentDivider" />
-
-        <!-- 덧글 목록 RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvComments"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:nestedScrollingEnabled="false"
-            app:layout_constraintTop_toBottomOf="@id/tvCommentLabel" />
-
-        <!-- 덧글 입력창 영역 -->
-        <LinearLayout
-            android:id="@+id/layoutInputComment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_heart_box"
-            android:backgroundTint="#F5F5F5"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            app:layout_constraintTop_toBottomOf="@id/rvComments">
-
-            <EditText
-                android:id="@+id/etComment"
+            <!-- 제목 섹션 -->
+            <TextView
+                android:id="@+id/tvTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:hint="의견을 남겨주세요..."
-                android:paddingHorizontal="12dp"
-                android:textSize="14sp"
-                android:maxLines="3"/>
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="28dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Project Title"
+                android:textColor="#2D2D2D"
+                android:textSize="28sp"
+                android:letterSpacing="-0.02"
+                app:layout_constraintEnd_toStartOf="@id/layoutLike"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardViewPager" />
 
-            <ImageButton
-                android:id="@+id/btnSendComment"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_send"
-                app:tint="#2D2D2D" />
-        </LinearLayout>
+            <!-- 좋아요 버튼 -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/layoutLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvTitle">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp">
+
+                    <ImageView
+                        android:id="@+id/ivLike"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_heart_outline"
+                        app:tint="#FF5252" />
+
+                    <TextView
+                        android:id="@+id/tvLikeCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="0"
+                        android:textColor="#2D2D2D"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tvDetailDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-light"
+                android:text="2025.01.01"
+                android:textColor="#5E5E5E"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+            <!-- 상세 설명 -->
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="6sp"
+                android:text="상세 설명입니다."
+                android:textColor="#333333"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDetailDate" />
+
+            <!-- 덧글 섹션 -->
+            <View
+                android:id="@+id/commentDivider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="32dp"
+                android:background="#F0F0F0"
+                app:layout_constraintTop_toBottomOf="@id/tvDescription" />
+
+            <TextView
+                android:id="@+id/tvCommentLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Comments"
+                android:textColor="#2D2D2D"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/commentDivider" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvComments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintTop_toBottomOf="@id/tvCommentLabel" />
+
+            <LinearLayout
+                android:id="@+id/layoutInputComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_heart_box"
+                android:backgroundTint="#F5F5F5"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                app:layout_constraintTop_toBottomOf="@id/rvComments">
+
+                <EditText
+                    android:id="@+id/etComment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="의견을 남겨주세요..."
+                    android:paddingHorizontal="12dp"
+                    android:textSize="14sp"
+                    android:maxLines="3"/>
+
+                <ImageButton
+                    android:id="@+id/btnSendComment"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:src="@android:drawable/ic_menu_send"
+                    app:tint="#2D2D2D" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- 🌟 화면 정중앙 최상단 애니메이션용 큰 하트 -->
+    <ImageView
+        android:id="@+id/ivBigHeart"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_heart_filled"
+        android:visibility="gone"
+        app:tint="#FF5252"
+        android:elevation="100dp" />
+
+</FrameLayout>

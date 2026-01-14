@@ -1,145 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="#DDD4D6"
-    android:scrollbars="none">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:padding="28dp"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:background="#DDD4D6"
+        android:scrollbars="none">
 
-        <!-- 상단 헤더 섹션 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="New Project"
-            android:textSize="30sp"
-            android:fontFamily="sans-serif-black"
-            android:textColor="#2D2D2D"
-            android:letterSpacing="-0.02"
-            android:gravity="start"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="4dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="당신의 멋진 결과물을 공유해보세요"
-            android:textSize="14sp"
-            android:textColor="#5E5E5E"
-            android:layout_marginBottom="40dp"/>
-
-        <!-- 입력창 섹션: 카드 스타일 느낌 적용 -->
-        <TextView android:text="Project Title" android:textSize="13sp" android:textStyle="bold" android:textColor="#444444" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:layout_marginStart="4dp"/>
-        <EditText
-            android:id="@+id/etTitle"
-            android:hint="프로젝트 제목을 입력하세요"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="18dp"
-            android:layout_marginBottom="28dp"
-            android:background="@android:color/white"
-            android:elevation="4dp"
-            android:textSize="15sp"
-            android:textColorHint="#BCBCBC"
-            android:inputType="text"/>
-
-        <TextView android:text="Description" android:textSize="13sp" android:textStyle="bold" android:textColor="#444444" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:layout_marginStart="4dp"/>
-        <EditText
-            android:id="@+id/etDescription"
-            android:hint="프로젝트의 핵심 내용과 목표를 설명해주세요"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minLines="6"
-            android:gravity="top"
-            android:padding="18dp"
-            android:layout_marginBottom="28dp"
-            android:background="@android:color/white"
-            android:elevation="4dp"
-            android:textSize="15sp"
-            android:textColorHint="#BCBCBC"/>
-
-        <TextView android:text="Team Members" android:textSize="13sp" android:textStyle="bold" android:textColor="#444444" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:layout_marginStart="4dp"/>
-        <EditText
-            android:id="@+id/etMembers"
-            android:hint="함께 작업한 팀원들의 이름을 입력하세요"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="18dp"
-            android:layout_marginBottom="36dp"
-            android:background="@android:color/white"
-            android:elevation="4dp"
-            android:textSize="15sp"
-            android:textColorHint="#BCBCBC"/>
-
-        <!-- 사진 섹션 디자인 개선 -->
         <LinearLayout
+            android:orientation="vertical"
+            android:padding="28dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_height="wrap_content">
+
+            <!-- 상단 헤더 섹션 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="New Project"
+                android:textSize="30sp"
+                android:fontFamily="sans-serif-black"
+                android:textColor="#2D2D2D"
+                android:letterSpacing="-0.02"
+                android:gravity="start"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="4dp"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Gallery"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#2D2D2D"/>
-
-            <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="16dp"
-                android:background="#30000000"/>
+                android:layout_height="wrap_content"
+                android:text="당신의 멋진 결과물을 공유해보세요"
+                android:textSize="14sp"
+                android:textColor="#5E5E5E"
+                android:layout_marginBottom="40dp"/>
+
+            <!-- 입력창 섹션 -->
+            <TextView android:text="Project Title" android:textSize="13sp" android:textStyle="bold" android:textColor="#444444" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:layout_marginStart="4dp"/>
+            <EditText
+                android:id="@+id/etTitle"
+                android:hint="프로젝트 제목을 입력하세요"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="18dp"
+                android:layout_marginBottom="28dp"
+                android:background="@android:color/white"
+                android:elevation="4dp"
+                android:textSize="15sp"
+                android:textColorHint="#BCBCBC"
+                android:inputType="text"/>
+
+            <TextView android:text="Description" android:textSize="13sp" android:textStyle="bold" android:textColor="#444444" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:layout_marginStart="4dp"/>
+            <EditText
+                android:id="@+id/etDescription"
+                android:hint="프로젝트의 핵심 내용과 목표를 설명해주세요"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minLines="6"
+                android:gravity="top"
+                android:padding="18dp"
+                android:layout_marginBottom="28dp"
+                android:background="@android:color/white"
+                android:elevation="4dp"
+                android:textSize="15sp"
+                android:textColorHint="#BCBCBC"/>
+
+            <TextView android:text="Team Members" android:textSize="13sp" android:textStyle="bold" android:textColor="#444444" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:layout_marginStart="4dp"/>
+            <EditText
+                android:id="@+id/etMembers"
+                android:hint="함께 작업한 팀원들의 이름을 입력하세요"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="18dp"
+                android:layout_marginBottom="36dp"
+                android:background="@android:color/white"
+                android:elevation="4dp"
+                android:textSize="15sp"
+                android:textColorHint="#BCBCBC"/>
+
+            <!-- 사진 섹션 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Gallery" android:textSize="16sp" android:textStyle="bold" android:textColor="#2D2D2D"/>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="16dp" android:background="#30000000"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvImages"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:layout_marginBottom="16dp"
+                android:background="#15000000"
+                android:padding="10dp"
+                android:clipToPadding="false"/>
+
+            <Button
+                android:id="@+id/btnSelectImage"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:text="+ 이미지 업로드"
+                android:backgroundTint="#6D5D61"
+                android:textColor="#FFFFFF"
+                app:cornerRadius="8dp"
+                android:layout_marginBottom="48dp"/>
+
+            <Button
+                android:id="@+id/btnRegister"
+                android:text="프로젝트 게시하기"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:textSize="18sp"
+                android:backgroundTint="#2D2D2D"
+                android:textColor="#FFFFFF"
+                app:cornerRadius="12dp"
+                android:elevation="8dp"
+                android:layout_marginBottom="20dp"/>
         </LinearLayout>
+    </ScrollView>
 
-        <!-- RecyclerView 배경 투명도와 라운딩 최적화 -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvImages"
-            android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp"
-            android:background="#15000000"
-            android:padding="10dp"
-            android:clipToPadding="false"/>
+    <!-- 🌟 폭죽 효과 뷰 (최상단 배치) -->
+    <nl.dionsegijn.konfetti.xml.KonfettiView
+        android:id="@+id/konfettiView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="999dp" />
 
-        <!-- 사진 선택 버튼: 둥근 외곽선 스타일 -->
-        <Button
-            android:id="@+id/btnSelectImage"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:text="+ 이미지 업로드"
-            android:backgroundTint="#6D5D61"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="false"
-            android:textSize="14sp"
-            android:layout_marginBottom="48dp"
-            app:cornerRadius="8dp"
-            android:elevation="2dp"/>
-
-        <!-- 등록 버튼: 하단 고정 느낌의 강력한 존재감 -->
-        <Button
-            android:id="@+id/btnRegister"
-            android:text="프로젝트 게시하기"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:textSize="18sp"
-            android:fontFamily="sans-serif-medium"
-            android:backgroundTint="#2D2D2D"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="false"
-            app:cornerRadius="12dp"
-            android:elevation="8dp"
-            android:layout_marginBottom="20dp"/>
-
-    </LinearLayout>
-</ScrollView>
+</FrameLayout>
