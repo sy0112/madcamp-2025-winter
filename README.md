@@ -2,6 +2,9 @@
 > **Madcamp 2025 Winter - Project 1**  
 > 거위의 기록 : 프로젝트를 공유하고 소통하는 개발자들의 소셜 네트워크 플랫폼
 
+![로고](./app/logo.png)
+
+
 [Notion](https://www.notion.so/madcamp/Geogi-2e85a1b83557808a8dd5d0fa55272ff1?source=copy_link)
 ---
 
