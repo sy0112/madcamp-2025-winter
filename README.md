@@ -1,64 +1,94 @@
-# 📱 Project Hub (Madcamp 2025 Winter)
+# 📱 AndroidLab: High-Performance Project Showcase Platform
+> **Madcamp 2025 Winter - Project 2**  
+> 모던 안드로이드 아키텍처와 실시간 클라우드 기술을 결합하여 설계된 전문 프로젝트 전시 및 소셜 인터랙션 플랫폼입니다.
 
-**Madcamp 2025 Winter** 시즌 동안 개발된 프로젝트 전시 및 소셜 상호작용 애플리케이션입니다. 사용자들이 자신의 프로젝트와 여러 장의 사진을 등록하고, 다른 이들의 프로젝트를 둘러보며 '하트(좋아요)'를 통해 반응을 남길 수 있는 플랫폼입니다.
+---
 
-## 🚀 주요 기능
+## 🛠 Engineering & Tech Stack
 
-### 1. 계정 및 인증
-- **Google 소셜 로그인**: Firebase Auth를 통해 복잡한 가입 절차 없이 구글 계정으로 즉시 이용 가능합니다.
-- **자동 로그인**: 앱 실행 시 이전 로그인 상태를 확인하여 편리한 진입을 지원합니다.
+### **Modern Android Ecosystem**
+- **Language**: Kotlin (Coroutines, High-order Functions)
+- **Architecture**: Fragment-based Single Activity Architecture
+- **UI Framework**: XML with **ViewBinding**, **Material Design 3 (M3)**
+- **Jetpack Components**: ViewModel(Planned), Fragment KTX, Navigation, Activity Result API
 
-### 2. 프로젝트 관리 (CRUD)
-- **다중 이미지 업로드**: Cloudinary API를 연동하여 프로젝트당 최대 5장의 고화질 사진을 등록할 수 있습니다.
-- **실시간 데이터 저장**: 작성한 제목, 설명, 팀원 정보가 Firestore NoSQL DB에 실시간으로 기록됩니다.
+### **Cloud & Infrastructure**
+- **Database**: **Firebase Cloud Firestore** (Real-time NoSQL)
+- **Authentication**: **Firebase Auth** (Google OAuth 2.0 Integration)
+- **Media Management**: **Cloudinary Android SDK** (Cloud-native Image Pipeline)
+- **Image Loading**: **Glide** (Efficient Caching & Transformation)
 
-### 3. 탐색 및 정렬
-- **Grid & List View**: 사용자 취향에 따라 격자 형태 또는 상세 리스트 형태로 목록을 탐색할 수 있습니다.
-- **스마트 정렬**: 
-  - **최신순**: 가장 최근에 등록된 프로젝트부터 확인.
-  - **좋아요순**: 유저들에게 가장 인기가 많은 프로젝트 순으로 정렬.
-- **실시간 동기화**: 새로운 글이 올라오거나 좋아요 수가 변하면 앱을 새로고침하지 않아도 즉시 화면에 반영됩니다.
+---
 
-### 4. 소셜 상호작용
-- **하트(좋아요) 기능**: 목록이나 상세 화면에서 즉시 하트를 누르거나 취소할 수 있습니다.
-- **이미지 슬라이더**: 상세 페이지에서 `ViewPager2`를 통해 업로드된 여러 장의 사진을 슬라이드로 감상할 수 있습니다.
+## 💎 Key Technical Implementation
 
-## 🛠 Tech Stack
+### **1. Intelligent Image Processing Pipeline**
+- **Client-Side Optimization**: 대용량 원본 사진 업로드로 인한 지연을 방지하기 위해 업로드 전 **Bitmap 리사이징 및 80% JPEG 압축** 알고리즘을 구현했습니다.
+- **Hybrid Data Handling**: `RegisterFragment`에서 **로컬 Uri**와 **서버 URL**을 동시에 처리하는 지능형 로직을 구축하여, 수정 시 변경된 사진만 선별적으로 업로드함으로써 네트워크 자원을 최적화했습니다.
+- **Cloudinary Integration**: 서버리스 환경에서 이미지 변환 및 호스팅을 처리하는 유연한 아키텍처를 구현했습니다.
 
-- **Language**: Kotlin
-- **UI Framework**: Android XML (ViewBinding)
-- **Database**: Firebase Cloud Firestore
-- **Authentication**: Firebase Auth (Google Login)
-- **Image Hosting**: Cloudinary
-- **Libraries**:
-  - **Glide**: 효율적인 네트워크 이미지 캐싱 및 로딩
-  - **Cloudinary Android SDK**: 클라우드 이미지 업로드 및 관리
-  - **RecyclerView & ViewPager2**: 유연한 목록 및 슬라이더 구현
-  - **Material Design 3**: 현대적인 UI 컴포넌트 적용
+### **2. Reactive Real-time Synchronization**
+- **Event-Driven UI**: Firestore의 `addSnapshotListener`를 전방위적으로 활용했습니다. 데이터가 서버에 기록되는 즉시 모든 클라이언트에 이벤트가 전파되어, **새로고침 없이** 프로젝트 목록, 좋아요 수, 덧글이 실시간 갱신됩니다.
+- **In-memory Dynamic Sorting**: 서버에 부하를 주지 않고 클라이언트 메모리 내에서 Kotlin의 `sortedByDescending` 함수를 이용해 **최신순/좋아요순** 정렬을 실시간으로 수행합니다.
+
+### **3. Scalable Data Modeling**
+- **Sub-collection Design**: 프로젝트 문서 하위에 `comments` 서브 컬렉션을 배치하는 계층형 설계를 통해 수천 개의 덧글이 달려도 상위 목록 로딩 속도에 영향을 주지 않는 성능적 격리(Isolation)를 실현했습니다.
+- **Concurrency Control**: `FieldValue.arrayUnion()` 및 `arrayRemove()`와 같은 원자적(Atomic) 연산을 사용하여 여러 사용자가 동시에 '좋아요'를 누를 때 발생할 수 있는 데이터 정합성 문제를 원천 차단했습니다.
+
+### **4. Advanced Fragment Reusability**
+- **Dual-Mode Editor**: `RegisterFragment` 하나로 **[신규 등록]**과 **[기존 데이터 수정]** 모드를 완벽하게 통합했습니다. 
+- `arguments` 기반의 모드 판별과 UI 상태 동적 변경 로직을 통해 코드 중복을 최소화하고 유지보수성을 극대화했습니다.
+
+---
+
+## 🚀 Full Features
+
+### **1. Social Engagement**
+- **Google Social Login**: Firebase Auth를 통한 원클릭 가입 및 프로필 연동.
+- **Real-time Interaction**: 목록 및 상세 화면에서 즉각적인 하트(좋아요) 토글 기능.
+- **Interactive Commenting**: 프로젝트별 독립적인 소통 공간 및 작성자 프로필 연동.
+
+### **2. Content Discovery (UX)**
+- **Dual Layout Engine**: 2열 격자(`GridView`)와 상세 카드(`ListView`) 간의 유연한 탐색 경험.
+- **Media Slider**: `ViewPager2`를 활용한 몰입감 있는 이미지 슬라이딩 인터페이스.
+- **Responsive Scrolling**: `NestedScrollView`를 통한 다양한 기기 해상도 최적 대응.
+
+### **3. Personalized Management (My Page)**
+- **Project Tracking**: 내가 등록한 프로젝트들만 모아보기 및 실시간 관리.
+- **Edit/Delete Workflow**: 등록된 결과물의 실시간 수정 및 직관적인 삭제 플로우.
+
+---
 
 ## 📂 Project Structure
 
 ```text
 com.example.androidlab
 ├── models
-│   └── Project.kt         # 데이터 모델 (id, title, imageUrls, likedBy 등)
+│   ├── Project.kt         # 메인 프로젝트 데이터 스키마 (LikedBy 리스트 포함)
+│   └── Comment.kt         # 서브 컬렉션용 덧글 데이터 스키마
 ├── ui
-│   ├── grid               # 그리드 목록 화면 (Fragment, Adapter)
-│   ├── list               # 리스트 목록 화면 (Fragment, Adapter)
-│   ├── register           # 프로젝트 등록 및 이미지 업로드 (Fragment, Adapter)
-│   └── detail             # 상세 정보 및 하트 기능 (Fragment, PagerAdapter)
-├── MainActivity           # 하단 네비게이션 및 프래그먼트 제어
-├── LoginActivity          # 구글 로그인 및 유저 정보 Firestore 저장 로직
-└── SplashActivity         # 앱 시작 화면 및 로그인 상태 체크
+│   ├── grid               # 2-Column 그리드 인터페이스 및 정렬 로직
+│   ├── list               # 고해상도 리스트 인터페이스
+│   ├── register           # 이미지 압축/업로드 & 등록/수정 통합 로직
+│   ├── detail             # 상세 정보, ViewPager2 슬라이더 & 실시간 덧글 시스템
+│   └── mypage             # 내 프로젝트 관리 및 개인화 레이어
+├── LoginActivity          # Google OAuth 인증 및 User Sync
+├── MainActivity           # Fragment 흐름 제어 및 하단 네비게이션
+└── SplashActivity         # Session 체크 및 자동 로그인 엔진
 ```
 
-## ⚙️ 설정 및 실행 방법
+---
 
-1. **Firebase 설정**: 
-   - `app/google-services.json` 파일을 발급받아 `app/` 폴더에 배치해야 합니다.
-2. **Cloudinary 설정**: 
-   - `RegisterFragment.kt` 내 `cloudinaryConfig`와 `unsigned` 프리셋 이름(`madcamp_winter_2025`)이 설정되어 있습니다.
-3. **Gradle Sync**: 
-   - Android Studio에서 프로젝트를 연 후 상단의 Elephant 아이콘을 눌러 라이브러리를 동기화합니다.
+## 👥 Team Members
+- **박새연** (Sae-yeon Park)
+- **강승수** (Seung-su Kang)
 
+---
 
+## ⚙️ How to Run
+1. Google Firebase 콘솔에서 `google-services.json`을 다운로드하여 `app/` 폴더에 삽입합니다.
+2. `RegisterFragment.kt`의 `cloudinaryConfig`에 본인의 Cloud API Key를 입력합니다.
+3. Android Studio에서 Gradle Sync 후 프로젝트를 실행합니다. (Target SDK 36 지원)
+
+---
+**Developed with Technical Excellence by Madcamp 2025 Winter Team.**

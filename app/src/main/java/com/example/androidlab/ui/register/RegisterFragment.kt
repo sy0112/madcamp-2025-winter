@@ -26,6 +26,8 @@ import com.google.firebase.ktx.Firebase
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import com.google.firebase.firestore.SetOptions
+
 
 /**
  * [RegisterFragment] 설명:
@@ -35,19 +37,23 @@ import java.io.FileOutputStream
  */
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 
-    private val db = Firebase.firestore
-    private val auth = Firebase.auth
+    private val db = Firebase.firestore // Firestore DB 접근 객체
+    private val auth = Firebase.auth // 로그인 사용자 확인
+
+    private var currentProjectId: String? = null // 현재 수정 중인 프로젝트 id, null이면 등록 모드, 값이 있으면 수정 모드
 
     // 최종적으로 저장될 이미지들의 Uri 목록 (로컬 Uri 또는 서버 URL 기반 Uri)
-    private var currentProjectId: String? = null
-
     private val selectedImageUris = mutableListOf<Uri>()
-    private var projectId: String? = null
+    private var projectId: String? = null // current projectId랑 무슨 차이인지
 
-    private lateinit var rvImages: RecyclerView
+    private lateinit var rvImages: RecyclerView // 선택된 이미지들을 가로로 나타내기 위해 사용.
+    // onViewCreated()에서 findViewByID로 초기화
+    // 처음에는 recyclerview라는 박스를 만들고 나중에 onviewcreate 에서 adapter를 통해 박스를 채워넣음.
     private lateinit var imageAdapter: ImageSelectAdapter
-    private lateinit var btnRegister: Button
+    // 이미지 adpater
+    private lateinit var btnRegister: Button // 등록 버튼
 
+    // cloudinaryConfig
     private val cloudinaryConfig = mapOf(
         "cloud_name" to "dlotgejuu",
         "api_key" to "398175322742183",
@@ -57,41 +63,81 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try {
-            MediaManager.init(requireContext(), cloudinaryConfig)
+            MediaManager.init(requireContext(), cloudinaryConfig) // Cloudinary 초기화
         } catch (e: IllegalStateException) {}
     }
 
     // 사진첩에서 사진 추가
     private val pickMultipleMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
+        //registerForActivityResult 는 여기가 registerfragment.kt여서가 아니라, 그냥 androidx.fragment 라이브러리의 함수임.
+        //registerForActivityResult은 시스템 기능 호출 + 결과 준비
+        // {uris -> //code } 이거는 lambda 문법 + call back 개념
+        // uris는 매개변수, -> 뒤에는 실행할 코드가 따라온다.
+
         if (uris.isNotEmpty()) {
             // 기존 목록에 추가 (최대 5장 제한 유지하려면 로직 추가 가능)
+
             selectedImageUris.addAll(uris)
+            // 위에 정의한 리스트에 다 넣기
+
+            // 5장 이상일 경우
             if (selectedImageUris.size > 5) {
                 Toast.makeText(requireContext(), "최대 5장까지만 가능합니다.", Toast.LENGTH_SHORT).show()
                 val subList = selectedImageUris.take(5)
                 selectedImageUris.clear()
                 selectedImageUris.addAll(subList)
             }
+
             imageAdapter.notifyDataSetChanged()
+            // Adapter 안의 데이터 리스트가 바뀌었다고 RecyclerView에 알려주는 함수
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // 왜 여기서 xml을 안넣고 view라고 표현하냐?
+        // 이미 위에 클래스에서 정의해 놓았다
+
         super.onViewCreated(view, savedInstanceState)
 
         val tvHeader = view.findViewById<TextView>(R.id.tvHeader)
+        // 엥 ? tvHeader라는 게 없는데? 이거 머닝?
+
+
         val etTitle = view.findViewById<EditText>(R.id.etTitle)
+        // 프로젝트 제목 등록란
+
         val etDescription = view.findViewById<EditText>(R.id.etDescription)
+        // 프로젝트 설명 등록란
+
         val etMembers = view.findViewById<EditText>(R.id.etMembers)
+        // 프로젝트 구성원 등록란
+
         rvImages = view.findViewById(R.id.rvImages)
+        // 사진 선택
+
         btnRegister = view.findViewById(R.id.btnRegister)
+        // 등록 버튼
+
+
         val btnSelectImage = view.findViewById<Button>(R.id.btnSelectImage)
+        // 사진 선택하겠다는 버튼
+
 
         // 초기 데이터 세팅 (수정 모드일 때)
+        // arguments는 안드로이드 fragment가 기본적으로 가지고 있는 데이터 주머니
+        // projectId가 null 이면 등록인 거고, null이 아닌거면 수정이네.
         projectId = arguments?.getString("projectId")
+
+
+
         if (projectId != null) {
+            // null이 아니면 수정이고
             tvHeader?.text = "프로젝트 수정"
-            btnRegister.text = "수정 완료"
+            btnRegister.text = "수정 완료" // 등록 버튼 -> 수정 버튼 텍스트 변경
+            currentProjectId = projectId // 수정 중 일 때 그 projectid는 currentproject id에 들어간다.
+            Log.d("RegisterFragment", "currentProjectId: $currentProjectId") // 추가
+
+
             etTitle.setText(arguments?.getString("title"))
             etDescription.setText(arguments?.getString("description"))
             etMembers.setText(arguments?.getString("members"))
@@ -120,13 +166,17 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
+
+        // 이거는 수정, 등록 다 거쳐가는 거네.
         btnRegister.setOnClickListener {
+            // 로그인 되어있나. 사실 이 코드 필요없어도 될듯
             val currentUser = auth.currentUser
             if (currentUser == null) {
                 Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            //
             val title = etTitle.text.toString().trim()
             val description = etDescription.text.toString().trim() 
             val members = etMembers.text.toString().trim()
@@ -232,49 +282,56 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             "imageUrls" to imageUrls,
             "createdAt" to System.currentTimeMillis()
         )
-
-//        if (currentProjectId != null) {
-//            // [수정 모드]
-//            db.collection("projects").document(currentProjectId!!)
-//                .set(projectData, SetOptions.merge())
-//                .addOnSuccessListener {
-//                    Toast.makeText(requireContext(), "수정되었습니다.", Toast.LENGTH_SHORT).show()
-//                    parentFragmentManager.beginTransaction()
-//                        .replace(R.id.fragmentContainer, GridFragment())
-//                        .commit()
-//                }
-//                .addOnFailureListener { e ->
-//                    Log.e("Firestore", "수정 에러", e)
-//                    Toast.makeText(requireContext(), "수정 실패", Toast.LENGTH_SHORT).show()
-//                }
-//        } else {
-//            // [등록 모드]
-//            db.collection("projects")
-//                .add(projectData)
-//                .addOnSuccessListener {
-//                    Toast.makeText(requireContext(), "프로젝트가 등록되었습니다.", Toast.LENGTH_SHORT).show()
-//                    parentFragmentManager.beginTransaction()
-//                        .replace(R.id.fragmentContainer, GridFragment())
-//                        .commit()
-//                }
-//                .addOnFailureListener { e ->
-//                    Log.e("Firestore", "등록 에러", e)
-//                    Toast.makeText(requireContext(), "등록 실패", Toast.LENGTH_SHORT).show()
-//                }
-//        }
-        val task = if (projectId == null) {
-            db.collection("projects").add(projectData)
+        Log.d("RegisterFragment", "part 2 : currentProjectId: $currentProjectId") // 추가
+        if (currentProjectId != null) {
+            // [수정 모드]
+            db.collection("projects").document(currentProjectId!!)
+                .set(projectData, SetOptions.merge())
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "수정되었습니다.", Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, GridFragment())
+                        .commit()
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "수정 에러", e)
+                    Toast.makeText(requireContext(), "수정 실패", Toast.LENGTH_SHORT).show()
+                }
         } else {
-            db.collection("projects").document(projectId!!).set(projectData)
+            // [등록 모드]
+            db.collection("projects")
+                .add(projectData)
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "프로젝트가 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, GridFragment())
+                        .commit()
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "등록 에러", e)
+                    Toast.makeText(requireContext(), "등록 실패", Toast.LENGTH_SHORT).show()
+                }
         }
 
-        task.addOnSuccessListener {
-            Toast.makeText(requireContext(), "저장되었습니다.", Toast.LENGTH_SHORT).show()
-            parentFragmentManager.popBackStack()
-        }.addOnFailureListener {
-            btnRegister.isEnabled = true
-            btnRegister.text = "저장"
-            Toast.makeText(requireContext(), "실패하였습니다.", Toast.LENGTH_SHORT).show()
-        }
+
+
+//        val task = if (projectId == null) {
+//            // project id가 null 이면 등록 이니까
+//            db.collection("projects").add(projectData)
+//        } else {
+//            // project id가 있다면 기존 프로젝트 수정
+//            db.collection("projects").document(projectId!!).set(projectData)
+//        }
+//
+//
+//        // 이거는 이제 작업 성공 여부 나타내는 call back
+//        task.addOnSuccessListener {
+//            Toast.makeText(requireContext(), "저장되었습니다.", Toast.LENGTH_SHORT).show()
+//            parentFragmentManager.popBackStack() // 이전에 보관했던 화면으로 돌아가기
+//        }.addOnFailureListener {
+//            btnRegister.isEnabled = true
+//            btnRegister.text = "저장"
+//            Toast.makeText(requireContext(), "실패하였습니다.", Toast.LENGTH_SHORT).show()
+//        }
     }
 }

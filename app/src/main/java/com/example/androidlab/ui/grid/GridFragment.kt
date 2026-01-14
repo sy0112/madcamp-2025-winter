@@ -41,7 +41,7 @@ class GridFragment : Fragment(R.layout.fragment_grid) {
 
         // 2. RecyclerView 설정
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2) //1줄로 수정
 
         // 3. 어댑터 초기화
         gridAdapter = GridAdapter(emptyList()) { detailFragment ->

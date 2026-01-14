@@ -38,7 +38,7 @@ class MyProjectsFragment : Fragment(R.layout.fragment_my_projects) {
                     putString("members", project.members)
                     putStringArrayList("imageUrls", ArrayList(project.imageUrls))
                 }
-                fragment.arguments = bundle
+                fragment.arguments = bundle // arguments로 포장해서 전달
 
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, fragment)
