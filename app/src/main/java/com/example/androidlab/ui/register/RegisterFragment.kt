@@ -40,7 +40,6 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
     private val auth = Firebase.auth
     private var currentProjectId: String? = null
 
-    // 등록/수정할 이미지들의 통합 리스트 (로컬 Uri + 서버 URL Uri)
     private val selectedImageUris = mutableListOf<Uri>()
     private lateinit var rvImages: RecyclerView
     private lateinit var imageAdapter: ImageSelectAdapter
@@ -93,14 +92,12 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             etMembers.setText(arguments?.getString("members"))
             etGithubUrl.setText(arguments?.getString("githubUrl"))
             
-            // [복구] 기존 이미지 불러오기
             val existingUrls = arguments?.getStringArrayList("imageUrls") ?: arrayListOf()
             if (selectedImageUris.isEmpty()) {
                 existingUrls.forEach { url -> selectedImageUris.add(Uri.parse(url)) }
             }
         }
 
-        // [복구] 삭제 기능(X 버튼)이 포함된 어댑터 연결
         imageAdapter = ImageSelectAdapter(selectedImageUris) { position ->
             selectedImageUris.removeAt(position)
             imageAdapter.notifyDataSetChanged()
@@ -133,25 +130,33 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             btnRegister.isEnabled = false
             btnRegister.text = "처리 중..."
 
-            // 이미지 업로드 및 저장 통합 프로세스 호출
             processImagesAndSave(currentUser.uid, currentUser.email, title, description, members, githubUrl)
         }
     }
 
+    /**
+     * 이미지 업로드 순서를 선택한 순서대로 보장하여 저장합니다.
+     */
     private fun processImagesAndSave(uid: String, email: String?, title: String, description: String, members: String, githubUrl: String) {
-        val finalUrls = mutableListOf<String>()
-        val urisToUpload = mutableListOf<Uri>()
-        
-        selectedImageUris.forEach { uri ->
-            if (uri.toString().startsWith("http")) finalUrls.add(uri.toString())
-            else urisToUpload.add(uri)
+        // [순서 보장] 원래 리스트 크기만큼 null로 채워진 리스트 생성
+        val finalUrls = arrayOfNulls<String>(selectedImageUris.size)
+        var processCount = 0
+
+        if (selectedImageUris.isEmpty()) {
+            saveProjectData(uid, email, title, description, members, githubUrl, emptyList())
+            return
         }
 
-        if (urisToUpload.isEmpty()) {
-            saveProjectData(uid, email, title, description, members, githubUrl, finalUrls)
-        } else {
-            var uploadCount = 0
-            urisToUpload.forEach { uri ->
+        selectedImageUris.forEachIndexed { index, uri ->
+            if (uri.toString().startsWith("http")) {
+                // 이미 서버에 있는 사진은 즉시 해당 위치에 삽입
+                finalUrls[index] = uri.toString()
+                processCount++
+                if (processCount == selectedImageUris.size) {
+                    saveProjectData(uid, email, title, description, members, githubUrl, finalUrls.filterNotNull())
+                }
+            } else {
+                // 새 로컬 사진은 압축 후 업로드
                 val compressedFile = compressImage(uri)
                 if (compressedFile != null) {
                     MediaManager.get().upload(compressedFile.absolutePath)
@@ -161,21 +166,28 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                             override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}
                             override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
                                 val imageUrl = resultData?.get("secure_url") as? String
-                                if (imageUrl != null) finalUrls.add(imageUrl)
-                                uploadCount++
+                                // [순서 보장] 원래 위치(index)에 결과 URL 삽입
+                                if (imageUrl != null) finalUrls[index] = imageUrl
+                                processCount++
                                 compressedFile.delete()
-                                if (uploadCount == urisToUpload.size) saveProjectData(uid, email, title, description, members, githubUrl, finalUrls)
+                                if (processCount == selectedImageUris.size) {
+                                    saveProjectData(uid, email, title, description, members, githubUrl, finalUrls.filterNotNull())
+                                }
                             }
                             override fun onError(requestId: String?, error: ErrorInfo?) {
-                                uploadCount++
+                                processCount++
                                 compressedFile.delete()
-                                if (uploadCount == urisToUpload.size) saveProjectData(uid, email, title, description, members, githubUrl, finalUrls)
+                                if (processCount == selectedImageUris.size) {
+                                    saveProjectData(uid, email, title, description, members, githubUrl, finalUrls.filterNotNull())
+                                }
                             }
                             override fun onReschedule(requestId: String?, error: ErrorInfo?) {}
                         }).dispatch()
                 } else {
-                    uploadCount++
-                    if (uploadCount == urisToUpload.size) saveProjectData(uid, email, title, description, members, githubUrl, finalUrls)
+                    processCount++
+                    if (processCount == selectedImageUris.size) {
+                        saveProjectData(uid, email, title, description, members, githubUrl, finalUrls.filterNotNull())
+                    }
                 }
             }
         }
@@ -205,7 +217,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             "description" to description,
             "members" to members,
             "githubUrl" to githubUrl,
-            "imageUrls" to imageUrls, // [수정] 무조건 현재 리스트로 덮어쓰기
+            "imageUrls" to imageUrls,
             "createdAt" to System.currentTimeMillis()
         )
 

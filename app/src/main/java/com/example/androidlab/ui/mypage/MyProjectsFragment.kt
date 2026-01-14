@@ -36,9 +36,10 @@ class MyProjectsFragment : Fragment(R.layout.fragment_my_projects) {
                     putString("title", project.title)
                     putString("description", project.description)
                     putString("members", project.members)
+                    putString("githubUrl", project.githubUrl) // 🌟 GitHub 주소 추가 전달
                     putStringArrayList("imageUrls", ArrayList(project.imageUrls))
                 }
-                fragment.arguments = bundle // arguments로 포장해서 전달
+                fragment.arguments = bundle
 
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, fragment)
