@@ -27,7 +27,6 @@ class GridAdapter(
     private val onClick: (DetailFragment) -> Unit
 ) : RecyclerView.Adapter<GridAdapter.VH>() {
 
-    private val currentUserUid = Firebase.auth.currentUser?.uid
     private val db = Firebase.firestore
 
     inner class VH(view: View) : RecyclerView.ViewHolder(view) {
@@ -36,7 +35,7 @@ class GridAdapter(
         val team: TextView = view.findViewById(R.id.tvTeam)
         val heartCount: TextView = view.findViewById(R.id.tvHeartCount)
         val ivHeart: ImageView = view.findViewById(R.id.ivHeart)
-        val layoutHeart: View = view.findViewById(R.id.layoutHeart) // 하트 클릭 영역 추가
+        val layoutHeart: View = view.findViewById(R.id.layoutHeart)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -65,32 +64,35 @@ class GridAdapter(
         holder.team.text = project.members
         holder.heartCount.text = project.likedBy.size.toString()
 
-        // 3. 하트 상태 표시
-        val isLikedByMe = currentUserUid != null && project.likedBy.contains(currentUserUid)
+        // [핵심 수정] 매번 현재 로그인 유저를 확인하여 하트 상태 결정
+        val currentUser = Firebase.auth.currentUser
+        val isLikedByMe = currentUser != null && project.likedBy.contains(currentUser.uid)
+        
         if (isLikedByMe) {
             holder.ivHeart.setImageResource(R.drawable.ic_heart_filled)
             holder.ivHeart.setColorFilter(Color.RED)
         } else {
             holder.ivHeart.setImageResource(R.drawable.ic_heart_outline)
-            holder.ivHeart.setColorFilter(Color.WHITE)
+            holder.ivHeart.setColorFilter(Color.WHITE) // 빈 하트는 흰색으로
         }
 
-        // 4. 하트 클릭 이벤트 (목록에서 바로 좋아요 토글)
+        // 3. 하트 클릭 이벤트
         holder.layoutHeart.setOnClickListener {
-            if (currentUserUid == null) {
+            val user = Firebase.auth.currentUser
+            if (user == null) {
                 Toast.makeText(holder.itemView.context, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val docRef = db.collection("projects").document(project.id)
-            if (isLikedByMe) {
-                docRef.update("likedBy", FieldValue.arrayRemove(currentUserUid))
+            if (project.likedBy.contains(user.uid)) {
+                docRef.update("likedBy", FieldValue.arrayRemove(user.uid))
             } else {
-                docRef.update("likedBy", FieldValue.arrayUnion(currentUserUid))
+                docRef.update("likedBy", FieldValue.arrayUnion(user.uid))
             }
         }
 
-        // 5. 항목 전체 클릭 이벤트 (상세화면 이동)
+        // 4. 항목 전체 클릭
         holder.itemView.setOnClickListener {
             onClick(DetailFragment.newInstance(project))
         }

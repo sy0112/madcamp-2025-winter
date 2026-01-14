@@ -103,7 +103,20 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         viewPager.adapter = DetailImageAdapter(project.imageUrls)
 
+        // 1. 초기 UI 설정
         updateLikeUI()
+
+        // 2. 프로젝트 실시간 데이터 감시 (하트 실시간 동기화)
+        db.collection("projects").document(project.id)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null || snapshot == null || !snapshot.exists()) return@addSnapshotListener
+                
+                val updatedProject = snapshot.toObject(Project::class.java)?.copy(id = snapshot.id)
+                if (updatedProject != null) {
+                    project = updatedProject
+                    updateLikeUI()
+                }
+            }
 
         layoutGithub.setOnClickListener {
             if (project.githubUrl.isNotEmpty()) {
@@ -134,20 +147,17 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         val docRef = db.collection("projects").document(project.id)
 
         val isLiked = project.likedBy.contains(user.uid)
-        val newLikedBy = project.likedBy.toMutableList()
 
         if (isLiked) {
-            newLikedBy.remove(user.uid)
+            // 좋아요 취소
             docRef.update("likedBy", FieldValue.arrayRemove(user.uid))
         } else {
+            // 좋아요 실행
             playFunnyHeartAnim(layoutLike)
             playCenterHeartAnim()
-            newLikedBy.add(user.uid)
             docRef.update("likedBy", FieldValue.arrayUnion(user.uid))
         }
-
-        project = project.copy(likedBy = newLikedBy)
-        updateLikeUI()
+        // [참고] snapshotListener가 있으므로 로컬 수동 업데이트 코드는 제거하여 서버 데이터와 일치시킵니다.
     }
 
     private fun updateLikeUI() {
@@ -156,8 +166,10 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         
         if (isLiked) {
             ivLike.setImageResource(R.drawable.ic_heart_filled)
+            ivLike.setColorFilter(android.graphics.Color.RED) // 채워진 하트는 빨간색으로
         } else {
             ivLike.setImageResource(R.drawable.ic_heart_outline)
+            ivLike.setColorFilter(android.graphics.Color.BLACK) // 빈 하트는 검은색(또는 기본색)으로
         }
         tvLikeCount.text = project.likedBy.size.toString()
     }
@@ -205,41 +217,29 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         val etComment = view.findViewById<EditText>(R.id.etComment)
         val btnSendComment = view.findViewById<ImageButton>(R.id.btnSendComment)
 
-        // 어댑터 초기화 및 리사이클러뷰 설정
         commentAdapter = CommentAdapter(emptyList())
         rvComments.layoutManager = LinearLayoutManager(requireContext())
         rvComments.adapter = commentAdapter
 
-        // 실시간 댓글 목록 불러오기
         db.collection("projects").document(project.id)
             .collection("comments")
             .orderBy("createdAt", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Log.w("DetailFragment", "Listen failed.", e)
-                    return@addSnapshotListener
-                }
-
+                if (e != null) return@addSnapshotListener
                 if (snapshot != null) {
                     val comments = snapshot.toObjects(Comment::class.java)
                     commentAdapter.updateComments(comments)
                 }
             }
 
-        // 댓글 전송 버튼 클릭 리스너
         btnSendComment.setOnClickListener {
             val content = etComment.text.toString().trim()
             val user = auth.currentUser
-
             if (user == null) {
                 Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            if (content.isEmpty()) {
-                Toast.makeText(requireContext(), "댓글 내용을 입력해주세요.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            if (content.isEmpty()) return@setOnClickListener
 
             val commentData = hashMapOf(
                 "userId" to user.uid,
@@ -252,14 +252,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             db.collection("projects").document(project.id)
                 .collection("comments")
                 .add(commentData)
-                .addOnSuccessListener {
-                    etComment.text.clear()
-                    Toast.makeText(requireContext(), "댓글이 등록되었습니다.", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener { e ->
-                    Log.e("DetailFragment", "댓글 등록 에러", e)
-                    Toast.makeText(requireContext(), "댓글 등록 실패", Toast.LENGTH_SHORT).show()
-                }
+                .addOnSuccessListener { etComment.text.clear() }
         }
     }
 }

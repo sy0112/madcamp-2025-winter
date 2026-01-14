@@ -22,14 +22,12 @@ import java.util.Locale
 /**
  * [ListAdapter] 클래스 설명:
  * 세로 리스트 형태로 프로젝트 정보를 보여주는 어댑터입니다.
- * 목록에서 바로 하트를 누를 수 있는 기능이 포함되어 있습니다.
  */
 class ListAdapter(
     private var projects: List<Project>,
     private val onClick: (DetailFragment) -> Unit
 ) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 
-    private val currentUserUid = Firebase.auth.currentUser?.uid
     private val db = Firebase.firestore
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -39,7 +37,7 @@ class ListAdapter(
         val heartCount: TextView = view.findViewById(R.id.tvListHeartCount)
         val date: TextView = view.findViewById(R.id.tvProjectDate)
         val ivHeart: ImageView = view.findViewById(R.id.ivListHeart)
-        val layoutHeart: View = view.findViewById(R.id.layoutHeart) // 하트 클릭 영역
+        val layoutHeart: View = view.findViewById(R.id.layoutHeart)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -59,28 +57,32 @@ class ListAdapter(
         val sdf = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
         holder.date.text = sdf.format(Date(project.createdAt))
 
+        // [핵심 수정] 매번 현재 로그인 유저를 확인하여 하트 상태 결정
+        val currentUser = Firebase.auth.currentUser
+        val isLikedByMe = currentUser != null && project.likedBy.contains(currentUser.uid)
+
         // 2. 하트 상태 표시
-        val isLikedByMe = currentUserUid != null && project.likedBy.contains(currentUserUid)
         if (isLikedByMe) {
             holder.ivHeart.setImageResource(R.drawable.ic_heart_filled)
             holder.ivHeart.setColorFilter(Color.RED)
         } else {
             holder.ivHeart.setImageResource(R.drawable.ic_heart_outline)
-            holder.ivHeart.setColorFilter(Color.GRAY) // 리스트 배경이 흰색이므로 회색으로 설정
+            holder.ivHeart.setColorFilter(Color.GRAY)
         }
 
         // 3. 하트 클릭 이벤트 (목록에서 바로 토글)
         holder.layoutHeart.setOnClickListener {
-            if (currentUserUid == null) {
+            val user = Firebase.auth.currentUser
+            if (user == null) {
                 Toast.makeText(holder.itemView.context, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val docRef = db.collection("projects").document(project.id)
-            if (isLikedByMe) {
-                docRef.update("likedBy", FieldValue.arrayRemove(currentUserUid))
+            if (project.likedBy.contains(user.uid)) {
+                docRef.update("likedBy", FieldValue.arrayRemove(user.uid))
             } else {
-                docRef.update("likedBy", FieldValue.arrayUnion(currentUserUid))
+                docRef.update("likedBy", FieldValue.arrayUnion(user.uid))
             }
         }
 
