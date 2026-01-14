@@ -1,5 +1,5 @@
-# 📱 AndroidLab: High-Performance Project Showcase Platform
-> **Madcamp 2025 Winter - Project 2**  
+# 📱 Project Hub: High-Performance Project Showcase Platform
+> **Madcamp 2025 Winter - Project 1**  
 > 모던 안드로이드 아키텍처와 실시간 클라우드 기술을 결합하여 설계된 전문 프로젝트 전시 및 소셜 인터랙션 플랫폼입니다.
 
 ---
