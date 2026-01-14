@@ -27,7 +27,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import com.google.firebase.firestore.SetOptions
-
+import com.example.androidlab.BuildConfig
 
 /**
  * [RegisterFragment] 설명:
@@ -55,10 +55,11 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
 
     // cloudinaryConfig
     private val cloudinaryConfig = mapOf(
-        "cloud_name" to "dlotgejuu",
-        "api_key" to "398175322742183",
-        "api_secret" to "j0dWzx_Ke1NSOEmA1pVrWvYY5tE"
+        "cloud_name" to BuildConfig.CLOUDINARY_CLOUD_NAME,
+        "api_key" to BuildConfig.CLOUDINARY_API_KEY,
+        "api_secret" to BuildConfig.CLOUDINARY_API_SECRET
     )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,3 +1,12 @@
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -10,6 +19,11 @@ android {
     compileSdk = 36
 
     defaultConfig {
+        // BuildConfig를 통해 코드에서 접근 가능하게 설정
+        buildConfigField("String", "CLOUDINARY_CLOUD_NAME", "\"${localProperties.getProperty("CLOUDINARY_CLOUD_NAME")}\"")
+        buildConfigField("String", "CLOUDINARY_API_KEY", "\"${localProperties.getProperty("CLOUDINARY_API_KEY")}\"")
+        buildConfigField("String", "CLOUDINARY_API_SECRET", "\"${localProperties.getProperty("CLOUDINARY_API_SECRET")}\"")
+
         applicationId = "com.example.androidlab"
         minSdk = 24
         targetSdk = 36
@@ -38,6 +52,7 @@ android {
     buildFeatures {
         viewBinding = true
         compose = true
+        buildConfig =true
     }
 }
 
